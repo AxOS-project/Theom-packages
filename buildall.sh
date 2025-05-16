@@ -13,7 +13,8 @@ for dir in */; do
     [[ -f "${dir}/PKGBUILD" ]] || continue
     echo -e "${GREEN}==> Building package in $dir${NC}"
     pushd "$dir" > /dev/null
-    makepkg -fcs --noconfirm
+    makepkg -fs --noconfirm
+    rm -r pkg/
     mv ./*.pkg.tar.zst "../$OUTDIR/"
     popd > /dev/null
 done
