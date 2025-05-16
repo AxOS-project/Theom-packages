@@ -1,0 +1,14 @@
+pkgname=theom-settings
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Settings of theom"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=('python')
+
+package() {
+    install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-settings/"
+
+    install -Dm755 "$srcdir/theom-launcher.sh" "$pkgdir/usr/bin/theom-settings"
+}
