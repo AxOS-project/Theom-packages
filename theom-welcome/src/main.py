@@ -113,7 +113,7 @@ class WelcomeApp(QWidget):
         vbox = QVBoxLayout(widget)
 
         features = [
-            "Customize your icon/GTK theme",
+            "Customize theom",
             "Explore the settings",
             "View keybindings"
         ]
