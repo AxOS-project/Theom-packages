@@ -1,3 +1,3 @@
-# Scripts
+# Theom packages
 
-This directory contains the script of the applications used by theom.
+The packages for theom.
