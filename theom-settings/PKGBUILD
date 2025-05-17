@@ -5,7 +5,12 @@ pkgdesc="Settings of theom"
 arch=('x86_64')
 url="https://github.com/AxOS-project/Theom-packages"
 license=('MIT')
-depends=('python')
+depends=(
+    'python'
+    'python-pyqt6'
+    'qt6-base'
+    'python-pyqt6-sip'
+)
 
 package() {
     install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-settings/"
