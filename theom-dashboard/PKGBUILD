@@ -1,0 +1,25 @@
+pkgname=theom-dashboard
+pkgver=1.1
+pkgrel=1
+pkgdesc="Dashbard of theom"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=(
+    'python'
+    'python-pyqt6'
+    'qt6-base'
+    'python-pyqt6-sip'
+    'python-psutil'
+    'python-astral'
+    'python-pytz'
+    'python-requests'
+    'python-aiohttp'
+    'python-dbus-next'
+)
+
+package() {
+    install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-dashboard/"
+
+    install -Dm755 "$srcdir/dashboard-launcher.sh" "$pkgdir/usr/bin/theom-dashboard"
+}

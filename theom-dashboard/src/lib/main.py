@@ -1,7 +1,7 @@
 import sys
 import subprocess
 from PyQt6.QtWidgets import QApplication
-from settings_app import SettingsApp
+from dashboard import Dashboard
 from app_styles import stylesheet, stylesheet_light
 
 if __name__ == "__main__":
@@ -18,6 +18,6 @@ if __name__ == "__main__":
         print(f"Error detecting theme: {e}")
         app.setStyleSheet(stylesheet())
 
-    window = SettingsApp()
+    window = Dashboard()
     window.show()
     sys.exit(app.exec())

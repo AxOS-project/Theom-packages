@@ -105,6 +105,52 @@ def stylesheet():
             background-color: #3e8ecf;
             color: #ffffff;
         }
+        QFrame {
+            background-color: #191a1c;
+            border-radius: 8px;
+        }
+        QCalendarWidget {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+        /* ensure every cell is dark by default */
+        QCalendarWidget QAbstractItemView::item {
+            background-color: #1f1f1f;
+        }
+        QCalendarWidget QToolButton {
+            background-color: #2a2a2a;
+            color: white;
+            border: none;
+        }
+        QCalendarWidget QMenu {
+            background-color: #2a2a2a;
+            color: white;
+        }
+        QCalendarWidget QSpinBox {
+            background-color: #2a2a2a;
+            color: white;
+            selection-background-color: #444;
+        }
+        QCalendarWidget QAbstractItemView {
+            selection-background-color: #444;
+            selection-color: white;
+            gridline-color: #333;
+        }
+        QCalendarWidget QHeaderView::section {
+            background-color: #444444;
+            color: #ffffff;
+            border: none;
+        }
+        QCalendarWidget QHeaderView:horizontal::section {
+            background-color: #444444;
+            color: #ffffff;
+            border: none;
+        }
+        QCalendarWidget QHeaderView:vertical::section {
+            background-color: #555555;
+            color: #ffcc00;
+            border: none;
+        }
         """
     )
 
@@ -120,7 +166,7 @@ def stylesheet_light():
 
         QListWidget {
             background-color: #ffffff;
-            border: 1px solid #e0e0e0;
+            border: 0px solid #e0e0e0;
             padding: 4px;
         }
 

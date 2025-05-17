@@ -25,7 +25,7 @@ class AppearancePage(QWidget):
         theomThemeLabel.setStyleSheet("font-size: 12px;")
 
         self.theomTheme = QComboBox()
-        self.theomTheme.addItems(["Light", "Dark"])
+        self.theomTheme.addItems(["light", "dark"])
         self.theomTheme.currentIndexChanged.connect(self.on_theme_changed)
 
         # Save button, initially hidden or disabled

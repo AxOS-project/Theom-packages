@@ -15,5 +15,5 @@ depends=(
 package() {
     install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-settings/"
 
-    install -Dm755 "$srcdir/theom-launcher.sh" "$pkgdir/usr/bin/theom-settings"
+    install -Dm755 "$srcdir/setting-launcher.sh" "$pkgdir/usr/bin/theom-settings"
 }
