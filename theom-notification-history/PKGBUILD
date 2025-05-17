@@ -1,0 +1,17 @@
+pkgname=theom-notification-history
+pkgver=1.1
+pkgrel=1
+pkgdesc="Notification history tracker of theom"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=(
+    'python'
+    'dbus'
+)
+
+package() {
+    install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-notification-history/"
+
+    install -Dm755 "$srcdir/launch-nh.sh" "$pkgdir/usr/bin/theom-notification-history"
+}
