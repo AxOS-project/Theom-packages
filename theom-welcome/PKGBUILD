@@ -1,5 +1,5 @@
 pkgname=theom-welcome
-pkgver=1.0.1
+pkgver=1.1
 pkgrel=1
 pkgdesc="Theom welcomer"
 arch=('x86_64')

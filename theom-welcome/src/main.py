@@ -88,7 +88,7 @@ class WelcomeApp(QWidget):
         layout.addWidget(explore_label)
 
 
-        layout.addLayout(self.create_compositioning_checkbox())
+        layout.addLayout(self.create_compositing_checkbox())
 
         layout.addWidget(self.create_feature_list())
         layout.addSpacerItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
@@ -161,14 +161,14 @@ class WelcomeApp(QWidget):
                     
                     if 'welcomer' not in config:
                         config['welcomer'] = True
-                    if 'compositioning' not in config:
-                        config['compositioning'] = False 
+                    if 'compositing' not in config:
+                        config['compositing'] = True 
 
                     return config
             except json.JSONDecodeError:
                 print("Failed to parse config.json")
         
-        return {"welcomer": True, "compositioning": False}
+        return {"welcomer": True, "compositing": True}
 
     def update_config(self, key, value):
         os.makedirs(os.path.dirname(CONFIG_PATH), exist_ok=True)
@@ -181,9 +181,9 @@ class WelcomeApp(QWidget):
         show_again = state != Qt.CheckState.Checked.value
         self.update_config("welcomer", show_again)
 
-    def on_compositioning_checkbox_changed(self, state):
+    def on_compositing_checkbox_changed(self, state):
         enable_compositing = state == Qt.CheckState.Checked.value
-        self.update_config("compositioning", enable_compositing)
+        self.update_config("compositing", enable_compositing)
 
     def create_checkbox_row(self):
         layout = QHBoxLayout()
@@ -195,14 +195,14 @@ class WelcomeApp(QWidget):
         layout.addWidget(self.dont_show_checkbox)
         return layout
 
-    def create_compositioning_checkbox(self):
+    def create_compositing_checkbox(self):
         layout = QHBoxLayout()
-        self.compositioning_checkbox = QCheckBox("Enable compositing")
-        self.compositioning_checkbox.setChecked(self.config.get("compositioning", False))
-        self.compositioning_checkbox.stateChanged.connect(self.on_compositioning_checkbox_changed)
-        self.compositioning_checkbox.setStyleSheet("padding-left: 10px;")
-        self.compositioning_checkbox.setToolTip("Enabling compositing is recommended for better performance and visual effects.")
-        layout.addWidget(self.compositioning_checkbox)
+        self.compositing_checkbox = QCheckBox("Enable compositing")
+        self.compositing_checkbox.setChecked(self.config.get("compositing", False))
+        self.compositing_checkbox.stateChanged.connect(self.on_compositing_checkbox_changed)
+        self.compositing_checkbox.setStyleSheet("padding-left: 10px;")
+        self.compositing_checkbox.setToolTip("Enabling compositing is recommended for better performance and visual effects.")
+        layout.addWidget(self.compositing_checkbox)
         return layout
 
     def create_exit_button(self):
