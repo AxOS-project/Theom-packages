@@ -1,3 +1,5 @@
+# Read this blog to get an idea on how notification dbus works: https://www.johnshaughnessy.com/blog/posts/how_do_notifications_work
+
 import os
 import json
 import gzip
@@ -6,7 +8,10 @@ import subprocess
 import argparse
 import time
 
-NOTIFICATIONS_DIR = './notifications'
+NOTIFICATIONS_DIR = os.path.join(
+    os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share")),
+    "theom-notification-history", "notifications"
+)
 
 def clean_old_notifications(days=1):
     now = time.time()
@@ -172,7 +177,7 @@ def monitor_notifications():
                 state = 'idle'
 
 def main():
-    os.makedirs('./notifications', exist_ok=True)
+    os.makedirs(NOTIFICATIONS_DIR, exist_ok=True)
     clean_old_notifications()
     parser = argparse.ArgumentParser(description="Notification manager")
     group = parser.add_mutually_exclusive_group(required=False)
