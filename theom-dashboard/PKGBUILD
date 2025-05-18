@@ -15,7 +15,8 @@ depends=(
     'python-pytz'
     'python-requests'
     'python-aiohttp'
-    'python-dbus-next'
+    'python-mpd2'
+    'mpd'
 )
 
 package() {

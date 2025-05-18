@@ -2,7 +2,7 @@
 
 import subprocess
 import json
-from PyQt6.QtCore import QObject, pyqtSignal, QTimer, Qt
+from PyQt6.QtCore import QObject, pyqtSignal, QTimer, Qt, QProcess
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame, QPushButton, QSizePolicy, QHBoxLayout
 from PyQt6.QtGui import QPixmap, QImage
 
@@ -13,48 +13,55 @@ class NotificationListener(QObject):
         super().__init__()
         self.timer = QTimer()
         self.seen_ids = set()
+        self.process = QProcess(self)
+
         self.timer.timeout.connect(self.fetch_notifications)
-        
+        self.process.finished.connect(self.handle_process_finished)
+
+        self._current_action = None  # Track if we are loading notifications or something else
+
     def start(self):
         self.load_all_notifications()
         self.timer.start(5000)
 
-
     def load_all_notifications(self):
-        try:
-            result = subprocess.run(
-                ['theom-notification-history', '--list'],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            data = json.loads(result.stdout)
-        except Exception as e:
-            print(f"Failed to load notification history: {e}")
+        if self.process.state() == QProcess.ProcessState.Running:
             return
-
-        for notif_id, notif in data.items():
-            self.emit_notification(notif_id, notif)
-            self.seen_ids.add(notif_id)
+        self._current_action = 'load_all'
+        self.process.start('theom-notification-history', ['--list'])
 
     def fetch_notifications(self):
-        try:
-            result = subprocess.run(
-                ['theom-notification-history', '--list'],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            data = json.loads(result.stdout)
-        except Exception as e:
-            print(f"Failed to fetch notification history: {e}")
+        if self.process.state() == QProcess.ProcessState.Running:
+            # Skip if process busy
+            return
+        self._current_action = 'fetch'
+        self.process.start('theom-notification-history', ['--list'])
+
+    def handle_process_finished(self, exit_code, exit_status):
+        if exit_code != 0:
+            print(f"Process exited with error code {exit_code}")
+            self._current_action = None
             return
 
-        for notif_id, notif in data.items():
-            if notif_id in self.seen_ids:
-                continue
-            self.emit_notification(notif_id, notif)
-            self.seen_ids.add(notif_id)
+        data_bytes = self.process.readAllStandardOutput()
+        try:
+            data_str = bytes(data_bytes).decode('utf-8')
+            data = json.loads(data_str)
+        except Exception as e:
+            print(f"Failed to parse notification history: {e}")
+            self._current_action = None
+            return
+
+        if self._current_action in ('load_all', 'fetch'):
+            for notif_id, notif in data.items():
+                if notif_id not in self.seen_ids:
+                    self.emit_notification(notif_id, notif)
+                    self.seen_ids.add(notif_id)
+        else:
+            # Unknown or no-op action
+            pass
+
+        self._current_action = None
 
     def emit_notification(self, notif_id, notif):
         heading = notif.get("heading", "")
@@ -67,13 +74,14 @@ class NotificationListener(QObject):
                 if isinstance(entry, dict) and "image-data" in entry:
                     pixmap = self.create_pixmap_from_image_data(entry["image-data"])
                     break
+            if pixmap:
+                break
 
         if pixmap is None:
             pixmap = QPixmap(48, 48)
             pixmap.fill(Qt.GlobalColor.transparent)
 
         self.new_notification.emit(notif_id, text, pixmap)
-
 
     def create_pixmap_from_image_data(self, image_info):
         try:
@@ -96,29 +104,41 @@ class NotificationListener(QObject):
             return None
 
     def delete_notification(self, filename):
-        try:
-            subprocess.run(
-                ['theom-notification-history', '--delete', filename],
-                check=True
-            )
+        process = QProcess(self)
+        process.finished.connect(lambda exit_code, status: self._handle_delete_finished(exit_code, status, filename, process))
+        process.start('theom-notification-history', ['--delete', filename])
+
+    def _handle_delete_finished(self, exit_code, exit_status, filename, process):
+        if exit_code != 0:
+            print(f"Failed to delete notification {filename}, exit code {exit_code}")
+        else:
             self.seen_ids.discard(filename)
-        except Exception as e:
-            print(f"Failed to delete notification {filename}: {e}")
+        process.deleteLater()
 
     def delete_all_notifications(self):
-        try:
-            result = subprocess.run(
-                ['theom-notification-history', '--list'],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            data = json.loads(result.stdout)
-            for filename in data.keys():
-                self.delete_notification(filename)
-        except Exception as e:
-            print(f"Failed to delete all notifications: {e}")
+        process = QProcess(self)
+        process.finished.connect(lambda exit_code, status: self._handle_delete_all_list_finished(exit_code, status, process))
+        process.start('theom-notification-history', ['--list'])
 
+    def _handle_delete_all_list_finished(self, exit_code, exit_status, process):
+        if exit_code != 0:
+            print(f"Failed to list notifications for deleting all, exit code {exit_code}")
+            process.deleteLater()
+            return
+
+        data_bytes = process.readAllStandardOutput()
+        try:
+            data_str = bytes(data_bytes).decode('utf-8')
+            data = json.loads(data_str)
+        except Exception as e:
+            print(f"Failed to parse notification history for delete all: {e}")
+            process.deleteLater()
+            return
+
+        for filename in data.keys():
+            self.delete_notification(filename)
+
+        process.deleteLater()
 
 
 class NotificationItem(QWidget):
@@ -152,7 +172,7 @@ class NotificationItem(QWidget):
         self.text_label.setWordWrap(True)
         self.text_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
-        self.delete_button = QPushButton("🗑️")
+        self.delete_button = QPushButton("x")
         self.delete_button.setFixedSize(32, 32)
         self.delete_button.clicked.connect(self.on_delete_clicked)
 
@@ -175,7 +195,7 @@ class NotificationsWidget(QWidget):
         main_layout = QVBoxLayout(container)
         main_layout.setSpacing(10)
 
-        title = QLabel("🔔 Notifications")
+        title = QLabel("Notifications")
         title.setStyleSheet("font-weight: bold; font-size: 16px;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(title)
@@ -208,7 +228,6 @@ class NotificationsWidget(QWidget):
     def handle_delete_notification(self, filename):
         self.listener.delete_notification(filename)
 
-        # Remove the widget from layout
         for i in range(self.notifications_layout.count()):
             item = self.notifications_layout.itemAt(i).widget()
             if isinstance(item, NotificationItem) and item.filename == filename:

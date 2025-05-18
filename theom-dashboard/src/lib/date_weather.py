@@ -116,7 +116,7 @@ class DateWeatherWidget(QWidget):
         layout = QVBoxLayout(container)
         layout.setSpacing(10)
 
-        title = QLabel("📆 Date & Weather")
+        title = QLabel("Date & Weather")
         title.setStyleSheet("font-weight: bold; font-size: 16px;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
