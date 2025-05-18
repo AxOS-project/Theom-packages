@@ -23,4 +23,6 @@ package() {
     install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-dashboard/"
 
     install -Dm755 "$srcdir/dashboard-launcher.sh" "$pkgdir/usr/bin/theom-dashboard"
+
+    install -Dm644 "$srcdir/theom-dashboard.desktop" "$pkgdir/usr/share/applications/theom-dashboard.desktop"
 }

@@ -16,4 +16,7 @@ package() {
     install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-settings/"
 
     install -Dm755 "$srcdir/setting-launcher.sh" "$pkgdir/usr/bin/theom-settings"
+    
+    install -Dm644 "$srcdir/theom-settings.desktop" "$pkgdir/usr/share/applications/theom-settings.desktop"
+    install -Dm644 "$srcdir/Theom-settings.png" "$pkgdir/usr/share/icons/hicolor/64x64/apps/Theom-settings.png"
 }
