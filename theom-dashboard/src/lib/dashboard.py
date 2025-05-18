@@ -7,7 +7,6 @@ from PyQt6.QtCore import QTimer, Qt
 import psutil
 import time
 import subprocess
-import qtawesome as qta
 
 from notifications import NotificationsWidget
 from system import SystemWidget
