@@ -4,6 +4,7 @@ import sys
 import os
 import json
 import subprocess
+import webbrowser
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -159,7 +160,7 @@ class WelcomeApp(QWidget):
             elif f == "Explore the settings":
                 subprocess.Popen(["theom-settings"])
             elif f == "View keybindings":
-                subprocess.Popen(["xdg-open", os.path.expanduser("~/.config/.theom/keybindings.txt")])
+                webbrowser.open(f"file:///usr/lib/theom-welcome/keybindings.html")
         except FileNotFoundError:
             print(f"Feature '{f}' not available.")
 

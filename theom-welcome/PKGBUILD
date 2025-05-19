@@ -1,5 +1,5 @@
 pkgname=theom-welcome
-pkgver=2.0
+pkgver=2.1
 pkgrel=1
 pkgdesc="Theom welcomer"
 arch=('x86_64')
@@ -13,7 +13,8 @@ depends=(
 )
 
 package() {
-    install -Dm755 "$srcdir/main.py" "$pkgdir/usr/bin/$pkgname"
+    install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-welcome/"
+    install -Dm755 "$srcdir/launch-welcomer.sh" "$pkgdir/usr/bin/theom-welcome"
     install -Dm644 "$srcdir/theom-welcome.desktop" "$pkgdir/usr/share/applications/theom-welcome.desktop"
 
     install -Dm644 "$srcdir/Theom-welcomer.png" "$pkgdir/usr/share/icons/hicolor/64x64/apps/Theom-welcomer.png"
