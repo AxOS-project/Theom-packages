@@ -15,4 +15,6 @@ depends=(
 package() {
     install -Dm755 "$srcdir/main.py" "$pkgdir/usr/bin/$pkgname"
     install -Dm644 "$srcdir/theom-welcome.desktop" "$pkgdir/usr/share/applications/theom-welcome.desktop"
+
+    install -Dm644 "$srcdir/Theom-welcomer.png" "$pkgdir/usr/share/icons/hicolor/64x64/apps/Theom-welcomer.png"
 }
