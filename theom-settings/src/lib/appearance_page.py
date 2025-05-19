@@ -7,7 +7,8 @@ class AppearancePage(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.last_saved_theme = None  # Track last saved theme
+        self.last_saved_theme = None
+        self.last_saved_layout = None
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -26,22 +27,35 @@ class AppearancePage(QWidget):
 
         self.theomTheme = QComboBox()
         self.theomTheme.addItems(["light", "dark"])
-        self.theomTheme.currentIndexChanged.connect(self.on_theme_changed)
+        self.theomTheme.currentIndexChanged.connect(self.on_selection_changed)
 
-        # Save button, initially hidden or disabled
-        self.save_button = QPushButton("Save Theme")
-        self.save_button.setEnabled(False)  # Disabled until change
-        self.save_button.clicked.connect(self.save_theme)
+        polybarlayoutLabel = QLabel("Polybar Layout:")
+        polybarlayoutLabel.setStyleSheet("font-size: 12px;")
+
+        self.polybarlayout = QComboBox()
+        self.polybarlayout.addItems(["float", "stuck"])
+        self.polybarlayout.currentIndexChanged.connect(self.on_selection_changed)
+
+        self.apply_button = QPushButton("Apply Changes")
+        self.apply_button.setVisible(False)
+        self.apply_button.clicked.connect(self.apply_changes)
+
+        self.noticeLabel = QLabel("")
+        self.noticeLabel.setStyleSheet("color: red; font-size: 11px;")
+        self.noticeLabel.setVisible(False)
 
         layout.addWidget(label)
         layout.addWidget(lxappearanceLabel)
         layout.addWidget(button)
         layout.addWidget(theomThemeLabel)
         layout.addWidget(self.theomTheme)
-        layout.addWidget(self.save_button)  # Add save button to layout
+        layout.addWidget(polybarlayoutLabel)
+        layout.addWidget(self.polybarlayout)
+        layout.addWidget(self.apply_button)
+        layout.addWidget(self.noticeLabel)
         layout.addStretch()
 
-        self.load_last_saved_theme()
+        self.load_saved_config()
 
     def launch_lxappearance(self):
         try:
@@ -49,49 +63,66 @@ class AppearancePage(QWidget):
         except FileNotFoundError:
             print("lxappearance is not installed or not in PATH.")
 
-    def load_last_saved_theme(self):
-        config_json_path = os.path.expanduser('~/.config/.theom/config.json')
-        if os.path.exists(config_json_path):
-            with open(config_json_path, 'r') as file:
+    def load_saved_config(self):
+        config_path = os.path.expanduser('~/.config/.theom/config.json')
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as file:
                 try:
-                    config_data = json.load(file)
-                    theme = config_data.get('theme', 'Light')
+                    config = json.load(file)
+                    theme = config.get('theme', 'light')
+                    layout = config.get('polybar_layout', 'float')
                 except json.JSONDecodeError:
-                    theme = 'Light'
+                    theme, layout = 'light', 'float'
         else:
-            theme = 'Light'
+            theme, layout = 'light', 'float'
+
         self.last_saved_theme = theme
-        index = self.theomTheme.findText(theme)
-        if index >= 0:
-            self.theomTheme.setCurrentIndex(index)
+        self.last_saved_layout = layout
 
-    def on_theme_changed(self, index):
-        current_theme = self.theomTheme.itemText(index)
-        # saves if it is different from last one
-        if current_theme != self.last_saved_theme:
-            self.save_button.setEnabled(True)
+        theme_index = self.theomTheme.findText(theme)
+        if theme_index >= 0:
+            self.theomTheme.setCurrentIndex(theme_index)
+
+        layout_index = self.polybarlayout.findText(layout)
+        if layout_index >= 0:
+            self.polybarlayout.setCurrentIndex(layout_index)
+
+    def on_selection_changed(self):
+        current_theme = self.theomTheme.currentText()
+        current_layout = self.polybarlayout.currentText()
+
+        if current_theme != self.last_saved_theme or current_layout != self.last_saved_layout:
+            self.apply_button.setVisible(True)
+            self.noticeLabel.setVisible(False)
         else:
-            self.save_button.setEnabled(False)
+            self.apply_button.setVisible(False)
 
-    def save_theme(self):
-        selected_theme = self.theomTheme.currentText()
-        print(f"Saving theme: {selected_theme}")
-        config_json_path = os.path.expanduser('~/.config/.theom/config.json')
+    def apply_changes(self):
+        new_theme = self.theomTheme.currentText()
+        new_layout = self.polybarlayout.currentText()
 
-        if os.path.exists(config_json_path):
-            with open(config_json_path, 'r') as file:
+        config_path = os.path.expanduser('~/.config/.theom/config.json')
+        config_data = {}
+
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as file:
                 try:
                     config_data = json.load(file)
                 except json.JSONDecodeError:
-                    config_data = {}
-        else:
-            config_data = {}
+                    pass
 
-        config_data['theme'] = selected_theme
+        config_data['theme'] = new_theme
+        config_data['polybar_layout'] = new_layout
 
-        with open(config_json_path, 'w') as file:
+        with open(config_path, 'w') as file:
             json.dump(config_data, file, indent=4)
 
-        self.last_saved_theme = selected_theme
-        self.save_button.setEnabled(False)
-        os.system("i3 restart") # restart i3 to apply changes
+        self.last_saved_theme = new_theme
+        self.last_saved_layout = new_layout
+
+        self.apply_button.setVisible(False)
+        self.noticeLabel.setText("Changes applied. Restart i3 to see effect.")
+        self.noticeLabel.setVisible(True)
+
+        # Thsi coe will restart i3 but i running this would be bad of the ux. i think so.
+        # os.system("i3 restart")
