@@ -1,5 +1,6 @@
 # INFO: This is a super fragile piece of code... Please be careful if editing it.
 
+import os
 import subprocess
 import json
 from PyQt6.QtCore import QObject, pyqtSignal, QTimer, Qt, QProcess
@@ -69,19 +70,26 @@ class NotificationListener(QObject):
         text = f"{heading}: {subheading}" if subheading else heading
 
         pixmap = None
-        for arr in notif.get("arrays", []):
-            for entry in arr:
-                if isinstance(entry, dict) and "image-data" in entry:
-                    pixmap = self.create_pixmap_from_image_data(entry["image-data"])
-                    break
-            if pixmap:
-                break
 
-        if pixmap is None:
+        icon_path = notif.get("icon_path", "")
+        if icon_path and os.path.exists(icon_path):
+            pixmap = QPixmap(icon_path)
+
+        if pixmap is None or pixmap.isNull():
+            for arr in notif.get("arrays", []):
+                for entry in arr:
+                    if isinstance(entry, dict) and "image-data" in entry:
+                        pixmap = self.create_pixmap_from_image_data(entry["image-data"])
+                        break
+                if pixmap:
+                    break
+
+        if pixmap is None or pixmap.isNull():
             pixmap = QPixmap(48, 48)
             pixmap.fill(Qt.GlobalColor.transparent)
 
         self.new_notification.emit(notif_id, text, pixmap)
+
 
     def create_pixmap_from_image_data(self, image_info):
         try:
