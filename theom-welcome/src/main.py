@@ -32,7 +32,13 @@ class WelcomeApp(QWidget):
     def base_stylesheet(self):
         return '''
             QWidget {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #ff99cc, stop:1 #66ccff);
+                background: qlineargradient(
+                    x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #2b2d42,
+                    stop:0.5 #23253a,
+                    stop:1 #1e2033
+                );
+
                 border-radius: 10px;
             }
             QLabel {
@@ -40,10 +46,12 @@ class WelcomeApp(QWidget):
                 font-size: 22px;
                 font-weight: bold;
                 margin-bottom: 15px;
+                background: transparent;
             }
             QCheckBox {
                 color: black;
                 font-size: 13px;
+                background: transparent;
             }
             QPushButton {
                 background-color: #ff66b2;
@@ -60,6 +68,8 @@ class WelcomeApp(QWidget):
                 background-color: #e60073;
             }
         '''
+    def get_user(self):
+        return os.getlogin()
 
     def init_ui(self):
         welcome_screen = QWidget()
@@ -72,19 +82,19 @@ class WelcomeApp(QWidget):
     def create_container(self):
         container = QWidget(self)
         container.setStyleSheet('''
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(255, 255, 255, 1);
             border-radius: 10px;
         ''')
         layout = QVBoxLayout(container)
 
-        welcome_label = self.create_label("Welcome to Theom!", Qt.AlignmentFlag.AlignCenter)
-        welcome_label.setStyleSheet("color: #333333; font-size: 20px; font-weight: bold;")
+        welcome_label = self.create_label(f"Welcome {self.get_user()}!", Qt.AlignmentFlag.AlignCenter)
+        welcome_label.setStyleSheet("color: #333333; font-size: 20px; font-weight: bold; background: transparent;")
         layout.addWidget(welcome_label)
 
         layout.addSpacerItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed))
 
         explore_label = self.create_label("Set up your desktop:", Qt.AlignmentFlag.AlignLeft)
-        explore_label.setStyleSheet("color: #333333; font-size: 16px; font-weight: bold;")
+        explore_label.setStyleSheet("color: #333333; font-size: 16px; font-weight: bold; background: transparent;")
         layout.addWidget(explore_label)
 
 
