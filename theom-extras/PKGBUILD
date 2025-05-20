@@ -1,0 +1,23 @@
+pkgname=theom-extras
+pkgver=1.0
+pkgrel=1
+pkgdesc="Optional extras for Theom DE"
+arch=('x86_64')
+depends=(
+  'pcmanfm-gtk3'
+  'flameshot'
+  'parcellite'
+  'blueman'
+  'lxappearance'
+  'materia-gtk-theme'
+  'papirus-icon-theme'
+  'starship'
+  'axos-wallpaper-collection'
+)
+license=('custom')
+source=()
+md5sums=()
+
+package() {
+    :
+}
