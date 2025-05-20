@@ -222,12 +222,22 @@ class NotificationsWidget(QWidget):
         clear_button.clicked.connect(self.clear_notifications)
         main_layout.addWidget(clear_button)
 
+        self.pauseNotifications = QPushButton("Pause Notifications")
+        self.pauseNotifications.clicked.connect(self.toggle_notification)
+        main_layout.addWidget(self.pauseNotifications)
+        self.check_pn_status() # pn == pause notification
+
         outer_layout = QVBoxLayout(self)
         outer_layout.addWidget(container)
 
         self.listener = NotificationListener()
         self.listener.new_notification.connect(self.add_notification)
         self.listener.start()
+
+    def check_pn_status(self):
+        process = subprocess.run(['dunstctl', 'is-paused'], stdout=subprocess.PIPE, text=True)
+        is_paused = process.stdout.strip() == 'true'
+        self.update_pn_button(is_paused)
 
     def add_notification(self, filename, text, pixmap):
         item = NotificationItem(filename, text, pixmap)
@@ -252,4 +262,28 @@ class NotificationsWidget(QWidget):
             widget = item.widget()
             if widget:
                 widget.deleteLater()
+
+
+    def toggle_notification(self):
+        # Check current state
+        process = subprocess.run(['dunstctl', 'is-paused'], stdout=subprocess.PIPE, text=True)
+        is_paused = process.stdout.strip() == 'true'
+
+        # Toggle state
+        new_state = 'false' if is_paused else 'true'
+        subprocess.run(['dunstctl', 'set-paused', new_state])
+
+        # Update button appearance
+        self.update_pn_button(new_state == 'true')
+
+    def update_pn_button(self, is_paused):
+        if is_paused:
+            self.pauseNotifications.setStyleSheet("""
+                background-color: #444;
+                border: 2px solid #888;
+                color: white;
+                font-weight: bold;
+            """)
+        else:
+            self.pauseNotifications.setStyleSheet("")
 
