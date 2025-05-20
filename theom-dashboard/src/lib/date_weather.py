@@ -5,6 +5,7 @@ from PyQt6.QtGui import QColor, QTextCharFormat
 from astral import LocationInfo
 from astral.sun import sun
 from datetime import datetime
+from detect_theme import current_theme
 import pytz
 import asyncio
 import aiohttp
@@ -17,8 +18,13 @@ class Calendar(QCalendarWidget):
         self.setVerticalHeaderFormat(QCalendarWidget.VerticalHeaderFormat.NoVerticalHeader)
 
         base_format = QTextCharFormat()
-        base_format.setBackground(QColor("#1f1f1f"))
-        base_format.setForeground(QColor("#e0e0e0"))
+
+        theme_output = current_theme()
+
+        if theme_output == "dark":
+            # only give these colors in dark theme because they blend too much with white.
+            base_format.setBackground(QColor("#1f1f1f"))
+            base_format.setForeground(QColor("#e0e0e0"))
 
         for day in (Qt.DayOfWeek.Monday, Qt.DayOfWeek.Tuesday, Qt.DayOfWeek.Wednesday,
                     Qt.DayOfWeek.Thursday, Qt.DayOfWeek.Friday):
@@ -131,26 +137,28 @@ class DateWeatherWidget(QWidget):
 
         self.weather_container = QFrame()
         self.weather_container.setFrameShape(QFrame.Shape.StyledPanel)
-        self.weather_container.setStyleSheet("background-color: #333333; border-radius: 8px; padding: 10px;")
+        self.weather_container.setObjectName("WeatherBox")
+        #self.weather_container.setStyleSheet("background-color: #333333; border-radius: 8px; padding: 10px;")
         weather_layout = QVBoxLayout(self.weather_container)
 
         self.weather_label = QLabel("🌤️ Weather: Loading...")
         self.weather_label.setWordWrap(True)
-        self.weather_label.setStyleSheet("font-size: 14px;")
+        self.weather_label.setStyleSheet("font-size: 14px; background-color: transparent")
         weather_layout.addWidget(self.weather_label)
         layout.addWidget(self.weather_container)
 
         self.sun_container = QFrame()
         self.sun_container.setFrameShape(QFrame.Shape.StyledPanel)
-        self.sun_container.setStyleSheet("background-color: #333333; border-radius: 8px; padding: 10px;")
+        self.sun_container.setObjectName("SunBox")
+        #self.sun_container.setStyleSheet("background-color: #333333; border-radius: 8px; padding: 10px;")
         sun_layout = QVBoxLayout(self.sun_container)
 
         self.sunrise_label = QLabel("🌅 Sunrise: Loading...")
-        self.sunrise_label.setStyleSheet("font-size: 14px;")
+        self.sunrise_label.setStyleSheet("font-size: 14px; background-color: transparent;")
         sun_layout.addWidget(self.sunrise_label)
 
         self.sunset_label = QLabel("🌇 Sunset: Loading...")
-        self.sunset_label.setStyleSheet("font-size: 14px;")
+        self.sunset_label.setStyleSheet("font-size: 14px; background-color: transparent;")
         sun_layout.addWidget(self.sunset_label)
 
         layout.addWidget(self.sun_container)

@@ -5,7 +5,7 @@ import subprocess
 import json
 from PyQt6.QtCore import QObject, pyqtSignal, QTimer, Qt, QProcess
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame, QPushButton, QSizePolicy, QHBoxLayout
-from PyQt6.QtGui import QPixmap, QImage
+from PyQt6.QtGui import QPixmap, QImage, QIcon
 
 class NotificationListener(QObject):
     new_notification = pyqtSignal(str, str, QPixmap)
@@ -180,7 +180,8 @@ class NotificationItem(QWidget):
         self.text_label.setWordWrap(True)
         self.text_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
-        self.delete_button = QPushButton("x")
+        self.delete_button = QPushButton()
+        self.delete_button.setIcon(QIcon("/usr/lib/theom-dashboard/icons/red-trash-can-icon.svg"))
         self.delete_button.setFixedSize(32, 32)
         self.delete_button.clicked.connect(self.on_delete_clicked)
 

@@ -170,9 +170,10 @@ class SystemWidget(QWidget):
 
         button_container = QFrame()
         button_container.setFrameShape(QFrame.Shape.StyledPanel)
-        button_container.setStyleSheet(
-            "background-color: #333333; border-radius: 8px; padding: 10px;"
-        )
+        button_container.setObjectName("wbButtonBox")
+        #button_container.setStyleSheet(
+        #    "background-color: #333333; border-radius: 8px; padding: 10px;"
+        #)
         button_layout = QHBoxLayout(button_container)
         button_layout.setSpacing(20)
 
@@ -215,9 +216,10 @@ class SystemWidget(QWidget):
         # Music Player inside a QFrame, right below buttons
         self.music_frame = QFrame()
         self.music_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.music_frame.setStyleSheet(
-            "background-color: #333333; border-radius: 8px; padding: 10px;"
-        )
+        self.music_frame.setObjectName("MusicBox")
+        #self.music_frame.setStyleSheet(
+        #    "background-color: #333333; border-radius: 8px; padding: 10px;"
+        #)
         music_layout = QVBoxLayout(self.music_frame)
         self.music_player = MusicPlayerWidget()
         music_layout.addWidget(self.music_player)
@@ -227,13 +229,14 @@ class SystemWidget(QWidget):
         # System Stats Section (CPU, RAM, Disk) below music player
         self.stats_container = QFrame()
         self.stats_container.setFrameShape(QFrame.Shape.StyledPanel)
-        self.stats_container.setStyleSheet(
-            "background-color: #333333; border-radius: 8px; padding: 10px;"
-        )
+        self.stats_container.setObjectName("SystemStatsBox")
+        #self.stats_container.setStyleSheet(
+        #    "background-color: #333333; border-radius: 8px; padding: 10px;"
+        #)
         stats_layout = QVBoxLayout(self.stats_container)
 
         self.cpu_label = QLabel("🖥️ CPU Usage:")
-        self.cpu_label.setStyleSheet("font-size: 14px;")
+        self.cpu_label.setStyleSheet("font-size: 14px; background-color: transparent;")
         stats_layout.addWidget(self.cpu_label)
 
         self.cpu_progress = CenteredTextProgressBar()
@@ -241,7 +244,7 @@ class SystemWidget(QWidget):
         stats_layout.addWidget(self.cpu_progress)
 
         self.ram_label = QLabel("🧠 RAM Usage:")
-        self.ram_label.setStyleSheet("font-size: 14px; margin-top: 10px;")
+        self.ram_label.setStyleSheet("font-size: 14px; margin-top: 10px; background-color: transparent")
         stats_layout.addWidget(self.ram_label)
 
         self.ram_progress = CenteredTextProgressBar()
@@ -249,7 +252,7 @@ class SystemWidget(QWidget):
         stats_layout.addWidget(self.ram_progress)
 
         self.disk_label = QLabel("💾 Disk Usage:")
-        self.disk_label.setStyleSheet("font-size: 14px; margin-top: 10px;")
+        self.disk_label.setStyleSheet("font-size: 14px; margin-top: 10px; background-color: transparent")
         stats_layout.addWidget(self.disk_label)
 
         self.disk_progress = CenteredTextProgressBar()
