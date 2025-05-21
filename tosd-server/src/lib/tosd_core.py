@@ -11,8 +11,6 @@ def clear_osd_windows():
         except tk.TclError:
             _osd_windows.remove(win)
 
-
-
 def calculate_position(pos_code, width, height, screen_width, screen_height, margin=20):
     pos_code = pos_code.upper()
     center_x = (screen_width - width) // 2
@@ -91,10 +89,15 @@ def show_osd(text, mode, value, duration, size, position,
         fill_width = int((val / 100) * (bar_x1 - bar_x0))
         canvas.create_rectangle(bar_x0, bar_y0, bar_x0 + fill_width, bar_y1, outline="", fill=slider_fill_color)
 
+        knob_width = int(8 * size)
+        knob_height = int(35 * size)
         knob_x = bar_x0 + fill_width
-        canvas.create_oval(
-            knob_x - int(10 * size), bar_y0 - int(5 * size),
-            knob_x + int(10 * size), bar_y1 + int(5 * size),
+        knob_y0 = (bar_y0 + bar_y1) // 2 - knob_height // 2
+        knob_y1 = knob_y0 + knob_height
+
+        canvas.create_rectangle(
+            knob_x - knob_width // 2, knob_y0,
+            knob_x + knob_width // 2, knob_y1,
             fill=slider_knob_color, outline=""
         )
 
