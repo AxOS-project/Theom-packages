@@ -1,0 +1,79 @@
+from pydbus import SessionBus
+from gi.repository import GLib
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from tosd_core import show_osd, clear_osd_windows
+
+class TOSDService:
+    """
+    <node>
+        <interface name='org.theom.tosd'>
+            <method name='ShowOSD'>
+                <arg type='s' name='text' direction='in'/>
+                <arg type='s' name='mode' direction='in'/>
+                <arg type='i' name='value' direction='in'/>
+                <arg type='d' name='duration' direction='in'/>
+                <arg type='d' name='size' direction='in'/>
+                <arg type='s' name='position' direction='in'/>
+                <arg type='s' name='background' direction='in'/>
+                <arg type='s' name='text_color' direction='in'/>
+                <arg type='s' name='slider_fill_color' direction='in'/>
+                <arg type='s' name='slider_knob_color' direction='in'/>
+            </method>
+            <method name='ClearAll'/>
+        </interface>
+    </node>
+    """
+
+    def __init__(self, loop):
+        self.loop = loop
+        self.executor = ThreadPoolExecutor(max_workers=4)
+
+    def ShowOSD(self, text, mode, value, duration, size, position, background,
+                text_color, slider_fill_color, slider_knob_color):
+
+        async def async_show_osd():
+            await self.loop.run_in_executor(
+                self.executor,
+                show_osd,
+                text, mode, value, duration, size, position,
+                background, text_color, slider_fill_color, slider_knob_color
+            )
+
+        asyncio.run_coroutine_threadsafe(async_show_osd(), self.loop)
+
+        return "OK"
+
+    def ClearAll(self):
+        clear_osd_windows()
+        return "Cleared"
+
+
+        asyncio.run_coroutine_threadsafe(async_clear(), self.loop)
+        return "Cleared"
+
+
+async def main():
+    bus = SessionBus()
+    loop = asyncio.get_running_loop()
+    service = TOSDService(loop)
+
+    bus_name = "org.theom.tosd"
+    object_path = "/org/theom/tosd"
+
+    bus.publish(bus_name, (object_path, service))
+
+    print(f"TOSD D-Bus server running at {bus_name} {object_path}")
+
+    future = asyncio.Future()
+
+    def run_glib():
+        GLib.MainLoop().run()
+
+    import threading
+    threading.Thread(target=run_glib, daemon=True).start()
+
+    await future
+
+if __name__ == "__main__":
+    asyncio.run(main())

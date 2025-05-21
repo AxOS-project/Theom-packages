@@ -1,0 +1,17 @@
+pkgname=tosd
+pkgver=0.1
+pkgrel=1
+pkgdesc="Theom on screen display server"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=(
+    'python'
+    'python-pydbus'
+    'python-gobject'
+)
+
+package() {
+    install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-osd-server/"
+    install -Dm755 "$srcdir/tosd-server-launcher.sh" "$pkgdir/usr/bin/tosd-server"
+}
