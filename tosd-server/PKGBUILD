@@ -1,4 +1,4 @@
-pkgname=tosd
+pkgname=tosd-server
 pkgver=0.1
 pkgrel=1
 pkgdesc="Theom on screen display server"
