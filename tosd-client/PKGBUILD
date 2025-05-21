@@ -1,5 +1,5 @@
 pkgname=tosd-client
-pkgver=0.1
+pkgver=0.2
 pkgrel=1
 pkgdesc="Theom on screen display client"
 arch=('x86_64')

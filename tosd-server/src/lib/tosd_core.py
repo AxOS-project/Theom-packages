@@ -1,7 +1,13 @@
 import tkinter as tk
 from tkinter import font
 
+_reuse_next_window = False
 _osd_windows = []
+
+
+def reuse_osd_window():
+    global _reuse_next_window
+    _reuse_next_window = True
 
 def clear_osd_windows():
     for win in _osd_windows[:]:
@@ -39,8 +45,21 @@ def show_osd(text, mode, value, duration, size, position,
              background="#23262d", text_color="#ffffff",
              slider_fill_color="#61afef", slider_knob_color="#528bff"):
 
-    root = tk.Tk()
-    _osd_windows.append(root)
+    global _reuse_next_window
+
+    if _reuse_next_window and _osd_windows:
+        root = _osd_windows[-1]
+        for widget in root.winfo_children():
+            widget.destroy()
+
+        if hasattr(root, '_close_after_id'):
+            root.after_cancel(root._close_after_id)
+    else:
+        root = tk.Tk()
+        _osd_windows.append(root)
+
+    _reuse_next_window = False
+
 
     def close_and_cleanup():
         try:
@@ -114,5 +133,5 @@ def show_osd(text, mode, value, duration, size, position,
         close_and_cleanup()
         return
 
-    root.after(int(duration * 1000), close_and_cleanup)
+    root._close_after_id = root.after(int(duration * 1000), close_and_cleanup)
     root.mainloop()

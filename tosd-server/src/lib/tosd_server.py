@@ -2,7 +2,7 @@ from pydbus import SessionBus
 from gi.repository import GLib
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from tosd_core import show_osd, clear_osd_windows
+from tosd_core import show_osd, clear_osd_windows, reuse_osd_window
 
 class TOSDService:
     """
@@ -15,6 +15,7 @@ class TOSDService:
                 <arg type='d' name='duration' direction='in'/>
                 <arg type='d' name='size' direction='in'/>
                 <arg type='s' name='position' direction='in'/>
+                <arg type='b' name='reuse_window' direction='in'/>
                 <arg type='s' name='background' direction='in'/>
                 <arg type='s' name='text_color' direction='in'/>
                 <arg type='s' name='slider_fill_color' direction='in'/>
@@ -29,8 +30,12 @@ class TOSDService:
         self.loop = loop
         self.executor = ThreadPoolExecutor(max_workers=4)
 
-    def ShowOSD(self, text, mode, value, duration, size, position, background,
+    def ShowOSD(self, text, mode, value, duration, size, position, reuse_window, background,
                 text_color, slider_fill_color, slider_knob_color):
+
+        if reuse_window:
+            reuse_osd_window()
+
 
         async def async_show_osd():
             await self.loop.run_in_executor(

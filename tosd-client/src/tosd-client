@@ -12,6 +12,7 @@ def main():
     parser.add_argument("-d", "--duration", type=float, default=2.0)
     parser.add_argument("-s", "--size", type=float, default=1.0)
     parser.add_argument("-p", "--position", type=str, default="T")
+    parser.add_argument("-r", "--reuse-window", action="store_true", help="Reuse the current OSD window if available.")
     parser.add_argument("--background-color", type=str, default="#23262d")
     parser.add_argument("--text-color", type=str, default="#ffffff")
     parser.add_argument("--slider-fill-color", type=str, default="#61afef")
@@ -26,7 +27,7 @@ def main():
         proxy.ClearAll()
         return
 
-    proxy.ShowOSD(args.text, args.mode, args.value, args.duration, args.size, args.position,
+    proxy.ShowOSD(args.text, args.mode, args.value, args.duration, args.size, args.position, args.reuse_window,
                   args.background_color, args.text_color, args.slider_fill_color, args.slider_knob_color)
 
 
