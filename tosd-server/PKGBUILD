@@ -9,6 +9,7 @@ depends=(
     'python'
     'python-pydbus'
     'python-gobject'
+    'tk'
 )
 
 package() {
