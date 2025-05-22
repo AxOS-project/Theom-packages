@@ -1,5 +1,5 @@
 pkgname=theom-settings
-pkgver=1.4
+pkgver=1.5
 pkgrel=1
 pkgdesc="Settings of theom"
 arch=('x86_64')

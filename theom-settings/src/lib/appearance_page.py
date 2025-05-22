@@ -15,6 +15,7 @@ class AppearancePage(QWidget):
         layout.setSpacing(15)
 
         label = QLabel("Appearance Settings")
+        label.setStyleSheet("font-size: 25px; font-weight: bold;")
 
         lxappearanceLabel = QLabel("Customize application looks:")
         lxappearanceLabel.setStyleSheet("font-size: 12px;")

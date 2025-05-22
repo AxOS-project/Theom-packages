@@ -23,7 +23,8 @@ class PixmapWorker(QRunnable):
     @pyqtSlot()
     def run(self):
         pixmap = QPixmap(self.path).scaled(
-            self.size[0], self.size[1],
+            self.size[0],
+            self.size[1],
             Qt.AspectRatioMode.KeepAspectRatio,
             Qt.TransformationMode.SmoothTransformation
         )
@@ -46,6 +47,7 @@ class WallpapersPage(QWidget):
         self.layout.setSpacing(15)
 
         self.title_label = QLabel("Wallpapers")
+        self.title_label.setStyleSheet("font-size: 25px; font-weight: bold;")
         self.layout.addWidget(self.title_label)
 
         self.scroll_area = QScrollArea()

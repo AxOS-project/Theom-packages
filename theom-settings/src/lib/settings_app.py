@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
 from clickable_label import ClickableLabel
 from appearance_page import AppearancePage
 from wallpapers_page import WallpapersPage
+from about_page import AboutPage
 
 class SettingsApp(QWidget):
     def __init__(self):
@@ -30,7 +31,7 @@ class SettingsApp(QWidget):
 
         self.sidebar = QListWidget()
         self.sidebar.setSpacing(10)
-        self.sidebar.addItems(["Appearance", "Wallpapers"])
+        self.sidebar.addItems(["Appearance", "Wallpapers", "About"])
         self.sidebar.currentItemChanged.connect(self.on_sidebar_item_selected)
         sidebar_layout.addWidget(self.sidebar, stretch=1)
 
@@ -46,9 +47,11 @@ class SettingsApp(QWidget):
 
         self.appearance_page = AppearancePage()
         self.wallpapers_page = WallpapersPage(app_ref=self)
+        self.about_page = AboutPage()
 
         self.content_area.addWidget(self.appearance_page)
         self.content_area.addWidget(self.wallpapers_page)
+        self.content_area.addWidget(self.about_page)
 
         main_layout.addWidget(sidebar_widget)
         main_layout.addWidget(self.content_area, 1)
@@ -83,6 +86,8 @@ class SettingsApp(QWidget):
             self.content_area.setCurrentWidget(self.appearance_page)
         elif current.text() == "Wallpapers":
             self.content_area.setCurrentWidget(self.wallpapers_page)
+        elif current.text() == "About":
+            self.content_area.setCurrentWidget(self.about_page)
 
     def set_selected_wallpaper(self):
         if self.selected_wallpaper_path:
