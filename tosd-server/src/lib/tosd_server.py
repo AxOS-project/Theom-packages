@@ -1,7 +1,6 @@
 from pydbus import SessionBus
 from gi.repository import GLib
 import asyncio
-from concurrent.futures import ThreadPoolExecutor
 from tosd_core import show_osd, clear_osd_windows, reuse_osd_window
 
 class TOSDService:
@@ -26,42 +25,33 @@ class TOSDService:
     </node>
     """
 
-    def __init__(self, loop):
-        self.loop = loop
-        self.executor = ThreadPoolExecutor(max_workers=4)
-
     def ShowOSD(self, text, mode, value, duration, size, position, reuse_window, background,
                 text_color, slider_fill_color, slider_knob_color):
 
         if reuse_window:
             reuse_osd_window()
 
+        def gtk_callback():
+            show_osd(text, mode, value, duration, size, position,
+                     background, text_color, slider_fill_color, slider_knob_color)
+            return False  # Remove from GLib idle queue
 
-        async def async_show_osd():
-            await self.loop.run_in_executor(
-                self.executor,
-                show_osd,
-                text, mode, value, duration, size, position,
-                background, text_color, slider_fill_color, slider_knob_color
-            )
-
-        asyncio.run_coroutine_threadsafe(async_show_osd(), self.loop)
+        GLib.idle_add(gtk_callback)
 
         return "OK"
 
     def ClearAll(self):
-        clear_osd_windows()
-        return "Cleared"
-
-
-        asyncio.run_coroutine_threadsafe(async_clear(), self.loop)
+        def gtk_callback():
+            clear_osd_windows()
+            return False
+        GLib.idle_add(gtk_callback)
         return "Cleared"
 
 
 async def main():
     bus = SessionBus()
     loop = asyncio.get_running_loop()
-    service = TOSDService(loop)
+    service = TOSDService()
 
     bus_name = "org.theom.tosd"
     object_path = "/org/theom/tosd"
