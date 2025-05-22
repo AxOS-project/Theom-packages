@@ -1,2 +1,4 @@
 out/
 pkg/
+__pycache__/
+target/
