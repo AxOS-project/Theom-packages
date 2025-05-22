@@ -134,7 +134,10 @@ class OSDWindow(Gtk.Window):
         # Draw text
         if self.mode == "slider" or self.mode == "text":
             cr.set_source_rgba(*self.color_to_rgba(self.text_color))
-            cr.move_to(int(20 * self.size), self.height // 2 - self.base_font_size // 2)
+            _, text_height = self.layout.get_pixel_size()
+            text_y = (self.height - text_height) // 2
+            cr.move_to(int(20 * self.size), text_y)
+
             if self.mode == "slider" and self.text:
                 self.layout.set_text(self.text, -1)
             elif self.mode == "text":
