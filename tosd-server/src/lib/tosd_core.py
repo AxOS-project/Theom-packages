@@ -4,7 +4,6 @@ from tkinter import font
 _reuse_next_window = False
 _osd_windows = []
 
-
 def reuse_osd_window():
     global _reuse_next_window
     _reuse_next_window = True
@@ -12,10 +11,10 @@ def reuse_osd_window():
 def clear_osd_windows():
     for win in _osd_windows[:]:
         try:
-            win.after(0, win.destroy)
-            _osd_windows.remove(win)
+            win.destroy()
         except tk.TclError:
-            _osd_windows.remove(win)
+            pass
+        _osd_windows.remove(win)
 
 def calculate_position(pos_code, width, height, screen_width, screen_height, margin=20):
     pos_code = pos_code.upper()
@@ -49,29 +48,21 @@ def show_osd(text, mode, value, duration, size, position,
 
     if _reuse_next_window and _osd_windows:
         root = _osd_windows[-1]
+
         for widget in root.winfo_children():
             widget.destroy()
 
         if hasattr(root, '_close_after_id'):
             root.after_cancel(root._close_after_id)
+        root.deiconify()
     else:
         root = tk.Tk()
         _osd_windows.append(root)
+        root.overrideredirect(True)
+        root.attributes("-topmost", True)
+        root.config(bg=background)
 
     _reuse_next_window = False
-
-
-    def close_and_cleanup():
-        try:
-            root.destroy()
-        except tk.TclError:
-            pass
-        if root in _osd_windows:
-            _osd_windows.remove(root)
-
-    root.overrideredirect(True)
-    root.attributes("-topmost", True)
-    root.config(bg=background)
 
     base_font_size = int(28 * size)
     fnt = font.Font(family="Sans", size=base_font_size)
@@ -130,8 +121,15 @@ def show_osd(text, mode, value, duration, size, position,
 
     else:
         print(f"Unsupported mode: {mode}")
-        close_and_cleanup()
+        root.withdraw()
         return
 
-    root._close_after_id = root.after(int(duration * 1000), close_and_cleanup)
+    def hide_window():
+        try:
+            root.withdraw()
+        except tk.TclError:
+            pass
+
+    root._close_after_id = root.after(int(duration * 1000), hide_window)
+
     root.mainloop()
