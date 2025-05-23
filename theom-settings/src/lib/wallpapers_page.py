@@ -78,10 +78,18 @@ class WallpapersPage(QWidget):
         self.wallpaper_paths = paths
         self.lazy_index = 0
 
-        # Start lazy loading timer
+        num_wallpapers = len(paths)
+        if num_wallpapers > 0:
+            interval_ms = (num_wallpapers / 30) * 300
+        else:
+            interval_ms = 300
+
+        interval_ms = max(30, min(interval_ms, 1000))
+
         self.lazy_timer = QTimer()
         self.lazy_timer.timeout.connect(self.load_next_batch)
-        self.lazy_timer.start(30)
+        self.lazy_timer.start(int(interval_ms))
+
 
     def load_next_batch(self):
         if self.lazy_index >= len(self.wallpaper_paths):
