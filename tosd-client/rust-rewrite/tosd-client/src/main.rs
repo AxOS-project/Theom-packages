@@ -5,7 +5,8 @@ use std::error::Error;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let matches = Command::new("tosd-client-rs")
+    let matches = Command::new(env!("CARGO_PKG_NAME"))
+    .version(env!("CARGO_PKG_VERSION"))
         .about("tosd CLI client to call D-Bus server")
         .arg(Arg::new("text")
             .required(true)
@@ -32,12 +33,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
             .short('p')
             .long("position")
             .default_value("T")
-            .help("Position"))
-        .arg(Arg::new("reuse_window")
-            .short('r')
-            .long("reuse-window")
+            .help("Position (TL, T, TR, L, C, R, BL, B, BR)"))
+        .arg(Arg::new("dont_reuse_window")
+            .short('x')
+            .long("dont-reuse-window")
             .action(clap::ArgAction::SetTrue)
-            .help("Reuse the current OSD window if available"))
+            .help("Dont reuse the existing window."))
         .arg(Arg::new("background_color")
             .long("background-color")
             .default_value("#23262d"))
@@ -58,7 +59,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let duration = matches.get_one::<String>("duration").unwrap().parse::<f64>()?;
     let size = matches.get_one::<String>("size").unwrap().parse::<f64>()?;
     let position = matches.get_one::<String>("position").unwrap();
-    let reuse_window = matches.get_flag("reuse_window");
+    let dont_reuse_window = matches.get_flag("dont_reuse_window");
     let background_color = matches.get_one::<String>("background_color").unwrap();
     let text_color = matches.get_one::<String>("text_color").unwrap();
     let slider_fill_color = matches.get_one::<String>("slider_fill_color").unwrap();
@@ -87,7 +88,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         duration,
         size,
         position.as_str(),
-        reuse_window,
+        dont_reuse_window,
         background_color.as_str(),
         text_color.as_str(),
         slider_fill_color.as_str(),
