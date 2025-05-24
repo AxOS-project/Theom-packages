@@ -1,0 +1,14 @@
+pkgname=theom-dev-tools
+pkgver=1.0
+pkgrel=1
+pkgdesc="Theom Dev Tools"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=(
+    'python'
+)
+
+package() {
+    install -Dm755 "$srcdir/main.py" "$pkgdir/usr/bin/theom-dev-tools"
+}
