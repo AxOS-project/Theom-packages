@@ -19,22 +19,22 @@ def clear_osd_windows():
             pass
         _osd_windows.remove(win)
 
-def calculate_position(pos_code, width, height, screen_width, screen_height, margin=20):
+def calculate_position(pos_code, width, height, screen_width, screen_height, margin_x, margin_y):
     pos_code = pos_code.upper()
     center_x = (screen_width - width) // 2
     center_y = (screen_height - height) // 2
 
     if 'T' in pos_code:
-        y = margin
+        y = margin_y
     elif 'B' in pos_code:
-        y = screen_height - height - margin
+        y = screen_height - height - margin_y
     else:
         y = center_y
 
     if 'L' in pos_code:
-        x = margin
+        x = margin_x
     elif 'R' in pos_code:
-        x = screen_width - width - margin
+        x = screen_width - width - margin_x
     else:
         x = center_x
 
@@ -43,11 +43,12 @@ def calculate_position(pos_code, width, height, screen_width, screen_height, mar
 
     return x, y
 
+
 class OSDWindow(Gtk.Window):
     def __init__(self, text, mode, value, duration, size,
                  background="#23262d", text_color="#ffffff",
                  slider_fill_color="#61afef", slider_knob_color="#528bff",
-                 position="C"):
+                 position="T", margin_x=20, margin_y=20):
         super().__init__(type=Gtk.WindowType.POPUP)
         self.set_app_paintable(True)
         self.set_keep_above(True)
@@ -68,6 +69,9 @@ class OSDWindow(Gtk.Window):
         self.slider_fill_color = slider_fill_color
         self.slider_knob_color = slider_knob_color
         self.position = position.upper()
+        self.margin_x = margin_x
+        self.margin_y = margin_y
+
 
         self.connect("draw", self.on_draw)
         self.connect("destroy", self.on_destroy)
@@ -95,7 +99,7 @@ class OSDWindow(Gtk.Window):
         screen_width = screen.get_width()
         screen_height = screen.get_height()
 
-        x, y = calculate_position(self.position, self.width, self.height, screen_width, screen_height)
+        x, y = calculate_position(self.position, self.width, self.height, screen_width, screen_height, self.margin_x, self.margin_y)
         self.set_size_request(self.width, self.height)
         self.move(x, y)
 
@@ -202,7 +206,7 @@ class OSDWindow(Gtk.Window):
             _osd_windows.remove(self)
 
 
-def show_osd(text, mode, value, duration, size, position,
+def show_osd(text, mode, value, duration, size, position, margin_x=20, margin_y=20,
              background="#23262d", text_color="#ffffff",
              slider_fill_color="#61afef", slider_knob_color="#528bff"):
 
@@ -220,6 +224,8 @@ def show_osd(text, mode, value, duration, size, position,
         win.slider_fill_color = slider_fill_color
         win.slider_knob_color = slider_knob_color
         win.position = position.upper()
+        win.margin_x = margin_x
+        win.margin_y = margin_y
         win.start_timeout(duration)
 
         # Recalculate geometry and redraw
@@ -230,7 +236,7 @@ def show_osd(text, mode, value, duration, size, position,
 
     _reuse_next_window = False
 
-    win = OSDWindow(text, mode, value, duration, size, background, text_color, slider_fill_color, slider_knob_color, position)
+    win = OSDWindow(text, mode, value, duration, size, background, text_color, slider_fill_color, slider_knob_color, position, margin_x, margin_y)
     _osd_windows.append(win)
 
     #Gtk.main()

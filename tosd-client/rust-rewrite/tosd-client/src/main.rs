@@ -34,6 +34,18 @@ async fn main() -> Result<(), Box<dyn Error>> {
             .long("position")
             .default_value("T")
             .help("Position (TL, T, TR, L, C, R, BL, B, BR)"))
+        .arg(Arg::new("margin_x")
+            .required(false)
+            .long("margin-x")
+            .default_value("20")
+            .help("X margin of the window")
+            .value_parser(clap::value_parser!(i32)))
+        .arg(Arg::new("margin_y")
+            .required(false)
+            .long("margin-y")
+            .default_value("20")
+            .help("Y margin of the window")
+            .value_parser(clap::value_parser!(i32)))
         .arg(Arg::new("dont_reuse_window")
             .short('x')
             .long("dont-reuse-window")
@@ -59,6 +71,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let duration = matches.get_one::<String>("duration").unwrap().parse::<f64>()?;
     let size = matches.get_one::<String>("size").unwrap().parse::<f64>()?;
     let position = matches.get_one::<String>("position").unwrap();
+    let margin_x = matches.get_one::<i32>("margin_x").copied().unwrap();
+    let margin_y = matches.get_one::<i32>("margin_y").copied().unwrap();
     let dont_reuse_window = matches.get_flag("dont_reuse_window");
     let background_color = matches.get_one::<String>("background_color").unwrap();
     let text_color = matches.get_one::<String>("text_color").unwrap();
@@ -88,6 +102,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         duration,
         size,
         position.as_str(),
+        margin_x,
+        margin_y,
         dont_reuse_window,
         background_color.as_str(),
         text_color.as_str(),

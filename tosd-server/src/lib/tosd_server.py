@@ -14,6 +14,8 @@ class TOSDService:
                 <arg type='d' name='duration' direction='in'/>
                 <arg type='d' name='size' direction='in'/>
                 <arg type='s' name='position' direction='in'/>
+                <arg type='i' name='margin_x' direction='in'/>
+                <arg type='i' name='margin_y' direction='in'/>
                 <arg type='b' name='dont_reuse_window' direction='in'/>
                 <arg type='s' name='background' direction='in'/>
                 <arg type='s' name='text_color' direction='in'/>
@@ -25,14 +27,14 @@ class TOSDService:
     </node>
     """
 
-    def ShowOSD(self, text, mode, value, duration, size, position, dont_reuse_window, background,
-                text_color, slider_fill_color, slider_knob_color):
+    def ShowOSD(self, text, mode, value, duration, size, position, margin_x, margin_y, 
+                dont_reuse_window, background, text_color, slider_fill_color, slider_knob_color):
 
         if not dont_reuse_window: # if dont reuse window is not called, reuse the window
             reuse_osd_window()
 
         def gtk_callback():
-            show_osd(text, mode, value, duration, size, position,
+            show_osd(text, mode, value, duration, size, position, margin_x, margin_y,
                      background, text_color, slider_fill_color, slider_knob_color)
             return False  # Remove from GLib idle queue
 
