@@ -71,7 +71,7 @@ class AppearancePage(QWidget):
                 try:
                     config = json.load(file)
                     theme = config.get('theme', 'light')
-                    layout = config.get('polybar_layout', 'float')
+                    layout = config.get('polybar-layout', 'float')
                 except json.JSONDecodeError:
                     theme, layout = 'light', 'float'
         else:
@@ -113,7 +113,7 @@ class AppearancePage(QWidget):
                     pass
 
         config_data['theme'] = new_theme
-        config_data['polybar_layout'] = new_layout
+        config_data['polybar-layout'] = new_layout
 
         with open(config_path, 'w') as file:
             json.dump(config_data, file, indent=4)
