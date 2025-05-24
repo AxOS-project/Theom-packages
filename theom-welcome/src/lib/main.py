@@ -19,7 +19,7 @@ class WelcomeApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Welcome to Theom")
-        self.setFixedSize(500, 400)
+        self.setFixedSize(500, 402)
         self.setStyleSheet(self.base_stylesheet())
 
         self.config = self.load_config()
@@ -100,6 +100,7 @@ class WelcomeApp(QWidget):
 
 
         layout.addLayout(self.create_compositing_checkbox())
+        layout.addLayout(self.create_osd_checkbox())
 
         layout.addWidget(self.create_feature_list())
         layout.addSpacerItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
@@ -196,6 +197,10 @@ class WelcomeApp(QWidget):
         enable_compositing = state == Qt.CheckState.Checked.value
         self.update_config("compositing", enable_compositing)
 
+    def on_osd_checkbox_changed(self, state):
+        enable_osd = state == Qt.CheckState.Checked.value
+        self.update_config("osd", enable_osd)
+
     def create_checkbox_row(self):
         layout = QHBoxLayout()
         layout.addStretch()
@@ -209,11 +214,21 @@ class WelcomeApp(QWidget):
     def create_compositing_checkbox(self):
         layout = QHBoxLayout()
         self.compositing_checkbox = QCheckBox("Enable compositing")
-        self.compositing_checkbox.setChecked(self.config.get("compositing", False))
+        self.compositing_checkbox.setChecked(self.config.get("compositing", True))
         self.compositing_checkbox.stateChanged.connect(self.on_compositing_checkbox_changed)
         self.compositing_checkbox.setStyleSheet("padding-left: 10px;")
         self.compositing_checkbox.setToolTip("Enabling compositing is recommended for better performance and visual effects.")
         layout.addWidget(self.compositing_checkbox)
+        return layout
+
+    def create_osd_checkbox(self):
+        layout = QHBoxLayout()
+        self.osd_checkbox = QCheckBox("Enable on screen display effects")
+        self.osd_checkbox.setChecked(self.config.get("osd", True))
+        self.osd_checkbox.stateChanged.connect(self.on_osd_checkbox_changed)
+        self.osd_checkbox.setStyleSheet("padding-left: 10px;")
+        self.osd_checkbox.setToolTip("If enabled, it will show effects on the screen if certain actions are performed.")
+        layout.addWidget(self.osd_checkbox)
         return layout
 
     def create_exit_button(self):
