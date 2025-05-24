@@ -10,6 +10,8 @@ from clickable_label import ClickableLabel
 from appearance_page import AppearancePage
 from wallpapers_page import WallpapersPage
 from about_page import AboutPage
+from compositing_page import CompositingPage
+from osd_page import OSDPage
 
 class SettingsApp(QWidget):
     def __init__(self):
@@ -30,8 +32,8 @@ class SettingsApp(QWidget):
         sidebar_layout.setSpacing(10)
 
         self.sidebar = QListWidget()
-        self.sidebar.setSpacing(10)
-        self.sidebar.addItems(["Appearance", "Wallpapers", "About"])
+        self.sidebar.setSpacing(0)
+        self.sidebar.addItems(["Appearance", "Compositing", "OSD", "Wallpapers", "About"])
         self.sidebar.currentItemChanged.connect(self.on_sidebar_item_selected)
         sidebar_layout.addWidget(self.sidebar, stretch=1)
 
@@ -46,10 +48,14 @@ class SettingsApp(QWidget):
         self.content_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         self.appearance_page = AppearancePage()
+        self.compositing_page = CompositingPage()
+        self.osd_page = OSDPage()
         self.wallpapers_page = WallpapersPage(app_ref=self)
         self.about_page = AboutPage()
 
         self.content_area.addWidget(self.appearance_page)
+        self.content_area.addWidget(self.compositing_page)
+        self.content_area.addWidget(self.osd_page)
         self.content_area.addWidget(self.wallpapers_page)
         self.content_area.addWidget(self.about_page)
 
@@ -84,6 +90,10 @@ class SettingsApp(QWidget):
             return
         if current.text() == "Appearance":
             self.content_area.setCurrentWidget(self.appearance_page)
+        elif current.text() == "Compositing":
+            self.content_area.setCurrentWidget(self.compositing_page)
+        elif current.text() == "OSD":
+            self.content_area.setCurrentWidget(self.osd_page)
         elif current.text() == "Wallpapers":
             self.content_area.setCurrentWidget(self.wallpapers_page)
         elif current.text() == "About":
