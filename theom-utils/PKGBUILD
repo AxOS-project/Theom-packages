@@ -1,0 +1,20 @@
+pkgname=theom-utils
+pkgver=1.0
+pkgrel=1
+pkgdesc="Utilities for Theom DE"
+arch=('x86_64')
+depends=(
+  'theom-settings'
+  'theom-welcome'
+  'theom-notification-history'
+  'theom-dashboard'
+  'tosd-server'
+  'tosd-client'
+)
+license=('custom')
+source=()
+md5sums=()
+
+package() {
+    :
+}

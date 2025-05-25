@@ -108,6 +108,9 @@ class AboutPage(QWidget):
 
     def get_theom_version(self) -> str | None:
         try:
-            return importlib.metadata.version("theom")
-        except importlib.metadata.PackageNotFoundError:
+            result = subprocess.run(["pacman", "-Q", "theom-core"], capture_output=True, text=True, check=True)
+            version = result.stdout.strip()
+            return version
+        except subprocess.CalledProcessError:
+            print("Some error occurred.")
             return None

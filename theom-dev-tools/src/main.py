@@ -34,7 +34,7 @@ def download_asset(url, filename, output_dir="."):
 
 def get_theom_version():
     try:
-        result = subprocess.run(["pacman", "-Q", "theom"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["pacman", "-Q", "theom-core"], capture_output=True, text=True, check=True)
         version = result.stdout.strip()
         print(version)
     except subprocess.CalledProcessError:

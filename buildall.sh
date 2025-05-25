@@ -13,6 +13,7 @@ for dir in */; do
     [[ -f "${dir}/PKGBUILD" ]] || continue
     echo -e "${GREEN}==> Building package in $dir${NC}"
     pushd "$dir" > /dev/null
+    [ -d "$(pwd)/src/lib/__pycache__/" ] && rm -r "$(pwd)/src/lib/__pycache__/"
     makepkg -fs --noconfirm
     rm -r pkg/
     mv ./*.pkg.tar.zst "../$OUTDIR/"
