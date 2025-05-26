@@ -108,7 +108,7 @@ class AboutPage(QWidget):
 
     def get_theom_version(self) -> str | None:
         try:
-            result = subprocess.run(["pacman", "-Q", "theom-core"], capture_output=True, text=True, check=True)
+            result = subprocess.run(["pacman", "-Q", "theom"], capture_output=True, text=True, check=True)
             version = result.stdout.strip()
             return version
         except subprocess.CalledProcessError:
