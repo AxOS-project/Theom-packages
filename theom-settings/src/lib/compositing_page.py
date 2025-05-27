@@ -52,7 +52,7 @@ class CompositingPage(QWidget):
                     pass
 
         self.last_saved_compositing_value = compositing
-        index = self.enableCompositing.findText(compositing)
+        index = self.enableCompositing.findText(str(compositing).lower())
         if index >= 0:
             self.enableCompositing.setCurrentIndex(index)
 

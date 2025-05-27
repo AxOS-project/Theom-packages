@@ -52,7 +52,7 @@ class OSDPage(QWidget):
                     pass
 
         self.last_saved_osd_value = osd_value
-        index = self.enableOSD.findText(osd_value)
+        index = self.enableOSD.findText(str(osd_value).lower())
         if index >= 0:
             self.enableOSD.setCurrentIndex(index)
 
