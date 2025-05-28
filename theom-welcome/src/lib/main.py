@@ -99,7 +99,7 @@ class WelcomeApp(QWidget):
         layout.addWidget(explore_label)
 
 
-        layout.addLayout(self.create_compositing_checkbox())
+        #layout.addLayout(self.create_compositing_checkbox())
         layout.addLayout(self.create_osd_checkbox())
 
         layout.addWidget(self.create_feature_list())

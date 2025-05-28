@@ -1,5 +1,5 @@
 pkgname=theom-dashboard
-pkgver=1.5
+pkgver=1.6
 pkgrel=1
 pkgdesc="Dashbard of theom"
 arch=('x86_64')
@@ -17,6 +17,7 @@ depends=(
     'python-aiohttp'
     'python-mpd2'
     'mpd'
+    'mpc'
 )
 
 package() {
