@@ -1,5 +1,5 @@
 pkgname=tosd-server
-pkgver=0.6
+pkgver=0.7
 pkgrel=1
 pkgdesc="Theom on screen display server"
 arch=('x86_64')
@@ -14,5 +14,6 @@ depends=(
 
 package() {
     install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-osd-server/"
+    install -Dm644 "$srcdir/tosd.service" "$pkgdir/usr/lib/systemd/user/tosd.service"
     install -Dm755 "$srcdir/tosd-server-launcher.sh" "$pkgdir/usr/bin/tosd-server"
 }

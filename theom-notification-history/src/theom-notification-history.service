@@ -1,0 +1,7 @@
+[Unit]
+Description=Theom notification history service to track notifications
+
+[Service]
+ExecStart=/usr/bin/theom-notification-history
+Restart=on-failure
+RestartSec=5

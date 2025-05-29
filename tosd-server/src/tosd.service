@@ -1,0 +1,7 @@
+[Unit]
+Description=Tosd osd server
+
+[Service]
+ExecStart=/usr/bin/tosd-server
+Restart=on-failure
+RestartSec=5
