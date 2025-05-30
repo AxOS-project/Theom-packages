@@ -1,5 +1,5 @@
 pkgname=theom-settings
-pkgver=1.7
+pkgver=1.8
 pkgrel=1
 pkgdesc="Settings of theom"
 arch=('x86_64')
@@ -7,6 +7,7 @@ url="https://github.com/AxOS-project/Theom-packages"
 license=('MIT')
 depends=(
     'python'
+    'python-tomlkit'
     'python-pyqt6'
     'qt6-base'
     'python-pyqt6-sip'

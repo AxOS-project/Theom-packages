@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton
 import os
-import json
+import tomlkit
 
 class CompositingPage(QWidget):
     def __init__(self):
@@ -40,19 +40,19 @@ class CompositingPage(QWidget):
         self.load_saved_config()
 
     def load_saved_config(self):
-        config_path = os.path.expanduser('~/.config/.theom/config.json')
-        compositing = 'true'
+        config_path = os.path.expanduser('~/.config/.theom/config.toml')
+        compositing = 'true' 
 
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:
                 try:
-                    config = json.load(file)
-                    compositing = config.get('compositing', 'true')
-                except json.JSONDecodeError:
-                    pass
+                    config = tomlkit.parse(file.read())
+                    compositing = str(config.get("features", {}).get("compositing", "true")).lower()
+                except Exception as e:
+                    print(f"Failed to load TOML config: {e}")
 
         self.last_saved_compositing_value = compositing
-        index = self.enableCompositing.findText(str(compositing).lower())
+        index = self.enableCompositing.findText(compositing)
         if index >= 0:
             self.enableCompositing.setCurrentIndex(index)
 
@@ -68,23 +68,26 @@ class CompositingPage(QWidget):
     def apply_changes(self):
         new_compositing_value = self.enableCompositing.currentText()
 
-        config_path = os.path.expanduser('~/.config/.theom/config.json')
-        config_data = {}
+        config_path = os.path.expanduser('~/.config/.theom/config.toml')
 
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:
                 try:
-                    config_data = json.load(file)
-                except json.JSONDecodeError:
-                    pass
+                    config = tomlkit.parse(file.read())
+                except Exception:
+                    config = tomlkit.document()
+        else:
+            config = tomlkit.document()
 
-        config_data['compositing'] = new_compositing_value
+        if "features" not in config:
+            config["features"] = tomlkit.table()
+
+        config["features"]["compositing"] = new_compositing_value == "true"
 
         with open(config_path, 'w') as file:
-            json.dump(config_data, file, indent=4)
+            file.write(tomlkit.dumps(config))
 
         self.last_saved_compositing_value = new_compositing_value
-
         self.apply_button.setVisible(False)
         self.noticeLabel.setText("Changes applied. Restart i3 to see effect.")
         self.noticeLabel.setVisible(True)

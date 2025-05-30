@@ -1,5 +1,5 @@
 pkgname=theom-dashboard
-pkgver=1.6
+pkgver=1.7
 pkgrel=1
 pkgdesc="Dashbard of theom"
 arch=('x86_64')
@@ -8,6 +8,7 @@ license=('MIT')
 depends=(
     'python'
     'python-pyqt6'
+    'python-tomlkit'
     'qt6-base'
     'python-pyqt6-sip'
     'python-psutil'

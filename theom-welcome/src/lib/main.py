@@ -2,7 +2,7 @@
 
 import sys
 import os
-import json
+import tomlkit
 import subprocess
 import webbrowser
 from PyQt6.QtCore import Qt
@@ -13,7 +13,8 @@ from PyQt6.QtWidgets import (
     QLabel, QCheckBox, QScrollArea
 )
 
-CONFIG_PATH = os.path.expanduser("~/.config/.theom/config.json")
+CONFIG_PATH = os.path.expanduser("~/.config/.theom/config.toml")
+WELCOMER_STATE_PATH = os.path.expanduser("~/.local/state/theom/welcomer.state")
 
 class WelcomeApp(QWidget):
     def __init__(self):
@@ -125,7 +126,7 @@ class WelcomeApp(QWidget):
         vbox = QVBoxLayout(widget)
 
         features = [
-            "Customize theom",
+            "Customize theom appearance",
             "Explore the settings",
             "View keybindings"
         ]
@@ -154,9 +155,23 @@ class WelcomeApp(QWidget):
         scroll.setWidget(widget)
         return scroll
 
+    def load_welcomer_state(self):
+        if os.path.exists(WELCOMER_STATE_PATH):
+            try:
+                with open(WELCOMER_STATE_PATH, "r") as f:
+                    return f.read().strip().lower() != "false"
+            except Exception:
+                return True
+        return True 
+
+    def save_welcomer_state(self, show):
+        os.makedirs(os.path.dirname(WELCOMER_STATE_PATH), exist_ok=True)
+        with open(WELCOMER_STATE_PATH, "w") as f:
+            f.write(str(show))
+
     def on_feature_clicked(self, f):
         try:
-            if f == "Customize your icon/GTK theme":
+            if f == "Customize theom appearance":
                 subprocess.Popen(["lxappearance"])
             elif f == "Explore the settings":
                 subprocess.Popen(["theom-settings"])
@@ -167,49 +182,57 @@ class WelcomeApp(QWidget):
 
     def load_config(self):
         if os.path.exists(CONFIG_PATH):
-            try:
-                with open(CONFIG_PATH, 'r') as f:
-                    config = json.load(f)
-                    
-                    if 'welcomer' not in config:
-                        config['welcomer'] = True
-                    if 'compositing' not in config:
-                        config['compositing'] = True 
+            with open(CONFIG_PATH, 'r') as f:
+                return tomlkit.parse(f.read())
+        return tomlkit.document()
 
-                    return config
-            except json.JSONDecodeError:
-                print("Failed to parse config.json")
-        
-        return {"welcomer": True, "compositing": True}
-
-    def update_config(self, key, value):
+    def update_config(self, key, value, section=None):
         os.makedirs(os.path.dirname(CONFIG_PATH), exist_ok=True)
-        config = self.config
-        config[key] = value
+
+        if os.path.exists(CONFIG_PATH):
+            with open(CONFIG_PATH, 'r') as f:
+                config = tomlkit.parse(f.read())
+        else:
+            config = tomlkit.document()
+
+        if section:
+            if section not in config:
+                config[section] = tomlkit.table()
+            config[section][key] = value
+        else:
+            config[key] = value
+
         with open(CONFIG_PATH, 'w') as f:
-            json.dump(config, f, indent=4)
+            f.write(tomlkit.dumps(config))
+
+        print(tomlkit.dumps(config))
+        self.config = config
+
+
 
     def on_checkbox_changed(self, state):
         show_again = state != Qt.CheckState.Checked.value
-        self.update_config("welcomer", show_again)
+        self.save_welcomer_state(show_again)
+
 
     def on_compositing_checkbox_changed(self, state):
         enable_compositing = state == Qt.CheckState.Checked.value
-        self.update_config("compositing", enable_compositing)
+        self.update_config("compositing", enable_compositing, section="features")
 
     def on_osd_checkbox_changed(self, state):
         enable_osd = state == Qt.CheckState.Checked.value
-        self.update_config("osd", enable_osd)
+        self.update_config("osd", enable_osd, section="features")
 
     def create_checkbox_row(self):
         layout = QHBoxLayout()
         layout.addStretch()
         self.dont_show_checkbox = QCheckBox("Don't show this again")
-        self.dont_show_checkbox.setChecked(not self.config.get("welcomer", True))
+        self.dont_show_checkbox.setChecked(not self.load_welcomer_state())
         self.dont_show_checkbox.stateChanged.connect(self.on_checkbox_changed)
         self.dont_show_checkbox.setToolTip("Don't show this window again while launching theom.")
         layout.addWidget(self.dont_show_checkbox)
         return layout
+
 
     def create_compositing_checkbox(self):
         layout = QHBoxLayout()
@@ -224,7 +247,7 @@ class WelcomeApp(QWidget):
     def create_osd_checkbox(self):
         layout = QHBoxLayout()
         self.osd_checkbox = QCheckBox("Enable on screen display effects")
-        self.osd_checkbox.setChecked(self.config.get("osd", True))
+        self.osd_checkbox.setChecked(self.config.get("features", {}).get("osd", True))
         self.osd_checkbox.stateChanged.connect(self.on_osd_checkbox_changed)
         self.osd_checkbox.setStyleSheet("padding-left: 10px;")
         self.osd_checkbox.setToolTip("If enabled, it will show effects on the screen if certain actions are performed.")
@@ -259,15 +282,15 @@ class WelcomeApp(QWidget):
 def main():
     force_launch = "--force" in sys.argv
 
-    if not force_launch and os.path.exists(CONFIG_PATH):
-        try:
-            with open(CONFIG_PATH, 'r') as f:
-                cfg = json.load(f)
-                if not cfg.get("welcomer", True):
-                    print("Welcomer is disabled. Exiting.")
-                    sys.exit(0)
-        except json.JSONDecodeError:
-            print("Invalid JSON config. Proceeding anyway.")
+    if not os.path.exists(WELCOMER_STATE_PATH):
+        show = True
+    else:
+        with open(WELCOMER_STATE_PATH, 'r') as f:
+            show = f.read().strip().lower() != "false"
+    if not show and not force_launch:
+        print("Welcomer is disabled. Exiting.")
+        sys.exit(0)
+
 
     app = QApplication(sys.argv)
     app.setStyleSheet("""

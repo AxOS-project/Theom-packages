@@ -1,5 +1,5 @@
 import os
-import json
+import tomlkit
 import sys
 from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout,
@@ -114,21 +114,22 @@ class SettingsApp(QWidget):
 
     def set_wallpaper(self, wallpaper):
         print(f"Setting wallpaper: {wallpaper}")
-        config_json_path = os.path.expanduser('~/.config/.theom/config.json')
+        config_toml_path = os.path.expanduser('~/.config/.theom/config.toml')
 
-        if os.path.exists(config_json_path):
-            with open(config_json_path, 'r') as file:
+        if os.path.exists(config_toml_path):
+            with open(config_toml_path, 'r') as file:
                 try:
-                    config_data = json.load(file)
-                except json.JSONDecodeError:
-                    print("Error: config.json is not valid JSON.")
-                    return
+                    config = tomlkit.parse(file.read())
+                except Exception as e:
+                    print(f"Error reading TOML config: {e}")
+                    config = tomlkit.document()
         else:
-            config_data = {}
+            config = tomlkit.document()
 
-        config_data['wallpaper'] = wallpaper
+        config["appearance"] = config.get("appearance", tomlkit.table())
+        config["appearance"]["wallpaper"] = wallpaper
 
-        with open(config_json_path, 'w') as file:
-            json.dump(config_data, file, indent=4)
+        with open(config_toml_path, 'w') as file:
+            file.write(tomlkit.dumps(config))
 
         os.system(f"feh --bg-scale '{wallpaper}'")

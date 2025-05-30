@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton
 import os
-import json
+import tomlkit
 
 class OSDPage(QWidget):
     def __init__(self):
@@ -40,19 +40,19 @@ class OSDPage(QWidget):
         self.load_saved_config()
 
     def load_saved_config(self):
-        config_path = os.path.expanduser('~/.config/.theom/config.json')
+        config_path = os.path.expanduser('~/.config/.theom/config.toml')
         osd_value = 'true'
 
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:
                 try:
-                    config = json.load(file)
-                    osd_value = config.get('osd', 'true')
-                except json.JSONDecodeError:
-                    pass
+                    config = tomlkit.parse(file.read())
+                    osd_value = str(config.get("features", {}).get("osd", "true")).lower()
+                except Exception as e:
+                    print(f"Failed to load TOML config: {e}")
 
         self.last_saved_osd_value = osd_value
-        index = self.enableOSD.findText(str(osd_value).lower())
+        index = self.enableOSD.findText(osd_value)
         if index >= 0:
             self.enableOSD.setCurrentIndex(index)
 
@@ -67,20 +67,24 @@ class OSDPage(QWidget):
     def apply_changes(self):
         new_osd_value = self.enableOSD.currentText()
 
-        config_path = os.path.expanduser('~/.config/.theom/config.json')
-        config_data = {}
+        config_path = os.path.expanduser('~/.config/.theom/config.toml')
 
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:
                 try:
-                    config_data = json.load(file)
-                except json.JSONDecodeError:
-                    pass
+                    config = tomlkit.parse(file.read())
+                except Exception:
+                    config = tomlkit.document()
+        else:
+            config = tomlkit.document()
 
-        config_data['osd'] = new_osd_value
+        if "features" not in config:
+            config["features"] = tomlkit.table()
+
+        config["features"]["osd"] = new_osd_value == "true"
 
         with open(config_path, 'w') as file:
-            json.dump(config_data, file, indent=4)
+            file.write(tomlkit.dumps(config))
 
         self.last_saved_osd_value = new_osd_value
         self.apply_button.setVisible(False)

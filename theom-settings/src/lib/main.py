@@ -9,7 +9,7 @@ if __name__ == "__main__":
     app.setStyle("Fusion")
 
     try:
-        theme_output = subprocess.check_output(["theom-config", "theme"], text=True).strip().lower()
+        theme_output = subprocess.check_output(["theom-config", "appearance.theme"], text=True).strip().lower()
         if theme_output == "light":
             app.setStyleSheet(stylesheet_light())
         else:

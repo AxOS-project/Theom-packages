@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton
 import subprocess
 import os
-import json
+import tomlkit
 
 class AppearancePage(QWidget):
     def __init__(self):
@@ -65,17 +65,17 @@ class AppearancePage(QWidget):
             print("lxappearance is not installed or not in PATH.")
 
     def load_saved_config(self):
-        config_path = os.path.expanduser('~/.config/.theom/config.json')
+        config_path = os.path.expanduser('~/.config/.theom/config.toml')
+        theme, layout = 'light', 'float'
+
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:
                 try:
-                    config = json.load(file)
-                    theme = config.get('theme', 'light')
-                    layout = config.get('polybar-layout', 'float')
-                except json.JSONDecodeError:
-                    theme, layout = 'light', 'float'
-        else:
-            theme, layout = 'light', 'float'
+                    config = tomlkit.parse(file.read())
+                    theme = config.get("appearance", {}).get("theme", "light")
+                    layout = config.get("bar", {}).get("polybar_layout", "float")
+                except Exception as e:
+                    print(f"Failed to parse TOML: {e}")
 
         self.last_saved_theme = theme
         self.last_saved_layout = layout
@@ -102,21 +102,27 @@ class AppearancePage(QWidget):
         new_theme = self.theomTheme.currentText()
         new_layout = self.polybarlayout.currentText()
 
-        config_path = os.path.expanduser('~/.config/.theom/config.json')
-        config_data = {}
+        config_path = os.path.expanduser('~/.config/.theom/config.toml')
 
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:
                 try:
-                    config_data = json.load(file)
-                except json.JSONDecodeError:
-                    pass
+                    config = tomlkit.parse(file.read())
+                except Exception:
+                    config = tomlkit.document()
+        else:
+            config = tomlkit.document()
 
-        config_data['theme'] = new_theme
-        config_data['polybar-layout'] = new_layout
+        if "appearance" not in config:
+            config["appearance"] = tomlkit.table()
+        if "bar" not in config:
+            config["bar"] = tomlkit.table()
+
+        config["appearance"]["theme"] = new_theme
+        config["bar"]["polybar_layout"] = new_layout
 
         with open(config_path, 'w') as file:
-            json.dump(config_data, file, indent=4)
+            file.write(tomlkit.dumps(config))
 
         self.last_saved_theme = new_theme
         self.last_saved_layout = new_layout
@@ -125,5 +131,5 @@ class AppearancePage(QWidget):
         self.noticeLabel.setText("Changes applied. Restart i3 to see effect.")
         self.noticeLabel.setVisible(True)
 
-        # Thsi coe will restart i3 but i running this would be bad of the ux. i think so.
+        # Avoid forcing restart for UX reasons
         # os.system("i3 restart")
