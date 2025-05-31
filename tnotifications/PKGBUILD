@@ -1,0 +1,18 @@
+pkgname=tnotifications
+pkgver=1.0
+pkgrel=1
+pkgdesc="Theom Notifications"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=(
+    'python'
+    'python-pyqt6'
+    'qt6-base'
+    'python-pyqt6-sip'
+)
+
+package() {
+    install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/tnotifications/"
+    install -Dm755 "$srcdir/launch-tnotification.sh" "$pkgdir/usr/bin/tnotifications"
+}
