@@ -1,14 +1,14 @@
 def stylesheet():
     return """
     QWidget {
-        background-color: #23262d;
-        color: #d8dadc;
+        background-color: rgba(30, 30, 30, 0.85);
+        color: #b0b4bc;
         font-family: 'Segoe UI', sans-serif;
         font-size: 14px;
     }
 
     QListWidget {
-        background-color: #2c2f36;
+        background-color: #282c34;
         border: none;
         padding: 4px;
     }
@@ -20,37 +20,37 @@ def stylesheet():
     }
 
     QListWidget::item:selected {
-        background-color: #0986d3;
+        background-color: #d35d6e;
         color: #ffffff;
     }
 
     QLineEdit {
-        background-color: #2c2f36;
-        color: #d8dadc;
+        background-color: #282c34;
+        color: #b0b4bc;
         border: 1px solid #4b5a66;
         border-radius: 6px;
         padding: 8px 12px;
     }
 
     QLineEdit:focus {
-        border: 1px solid #0986d3;
+        border: 1px solid #d35d6e;
         outline: none;
     }
 
     QPushButton {
-        background-color: #2a2e32;
-        color: #d8dadc;
+        background-color: #282c34;
+        color: #b0b4bc;
         padding: 10px 16px;
         border: 1px solid #4b5a66;
         border-radius: 6px;
     }
 
     QPushButton:hover {
-        background-color: #424245;
+        background-color: #3a3f4a;
     }
 
     QPushButton:pressed {
-        background-color: #23262d;
+        background-color: rgba(30, 30, 30, 0.85);
     }
 
     QPushButton:disabled {
@@ -61,7 +61,7 @@ def stylesheet():
 
     QLabel {
         font-size: 16px;
-        color: #d8dadc;
+        color: #b0b4bc;
     }
 
     QScrollArea {
@@ -69,8 +69,8 @@ def stylesheet():
     }
 
     QComboBox {
-        background-color: #2c2f36;
-        color: #d8dadc;
+        background-color: #282c34;
+        color: #b0b4bc;
         border: 1px solid #4b5a66;
         border-radius: 6px;
         padding: 6px 12px;
@@ -78,19 +78,19 @@ def stylesheet():
     }
 
     QComboBox:hover {
-        border: 1px solid #0986d3;
+        border: 1px solid #d35d6e;
     }
 
     QComboBox::drop-down {
-        background-color: #2c2f36;
+        background-color: #282c34;
         border-left: none;
     }
 
     QComboBox QAbstractItemView {
-        background-color: #2c2f36;
+        background-color: #282c34;
         border: 1px solid #4b5a66;
-        selection-background-color: #0986d3;
-        color: #d8dadc;
+        selection-background-color: #d35d6e;
+        color: #b0b4bc;
         padding: 4px;
         outline: none;
     }
@@ -101,11 +101,10 @@ def stylesheet():
     }
 
     QComboBox QAbstractItemView::item:selected {
-        background-color: #0986d3;
+        background-color: #d35d6e;
         color: #ffffff;
     }
     """
-
 
 def stylesheet_light():
     return """
