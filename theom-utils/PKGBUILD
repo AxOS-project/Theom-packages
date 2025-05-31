@@ -11,6 +11,7 @@ depends=(
   'tosd-server'
   'tosd-client'
   'tscdctl'
+  'tnotifications'
 )
 license=('custom')
 source=()
