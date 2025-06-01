@@ -1,11 +1,12 @@
 # INFO: This is a super fragile piece of code... Please be careful if editing it.
 
+import argparse
 import os
 import sys
 import subprocess
 import json
-from PyQt6.QtCore import QObject, pyqtSignal, QTimer, Qt, QProcess
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame, QPushButton, QSizePolicy, QHBoxLayout, QApplication
+from PyQt6.QtCore import QObject, pyqtSignal, QTimer, Qt, QProcess, QSize
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame, QPushButton, QSizePolicy, QHBoxLayout, QApplication, QSpacerItem
 from PyQt6.QtGui import QPixmap, QImage, QIcon, QWindow
 from app_styles import stylesheet, stylesheet_light
 
@@ -183,7 +184,7 @@ class NotificationItem(QWidget):
         self.text_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
         self.delete_button = QPushButton()
-        self.delete_button.setIcon(QIcon("/usr/lib/theom-dashboard/icons/red-trash-can-icon.svg"))
+        self.delete_button.setIcon(QIcon("/usr/lib/tnotifications/icons/red-trash-can-icon.svg"))
         self.delete_button.setFixedSize(32, 32)
         self.delete_button.clicked.connect(self.on_delete_clicked)
 
@@ -205,11 +206,46 @@ class NotificationsWidget(QWidget):
 
         main_layout = QVBoxLayout(container)
         main_layout.setSpacing(10)
+        main_layout.setContentsMargins(0, 0, 0, 0)  # remove outer margins
 
         title = QLabel("Notifications")
-        title.setStyleSheet("font-weight: bold; font-size: 16px;")
+        title.setStyleSheet("font-weight: bold; font-size: 16px; color: white;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(title)
+
+        close_button = QPushButton()
+        close_button.setIcon(QIcon("/usr/lib/tnotifications/icons/red-x-icon.svg"))
+        close_button.setIconSize(QSize(16, 16))
+        close_button.setFixedSize(24, 24)
+        close_button.setStyleSheet("border: none; background: transparent;")
+        close_button.clicked.connect(QApplication.quit)
+
+        header_layout = QHBoxLayout()
+        header_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+
+
+        dummy_space = QWidget()
+        dummy_space.setFixedSize(24, 24)  # Same fixed size as your close button
+        dummy_space.setStyleSheet("background: transparent; border: none;")
+        header_layout.insertWidget(0, dummy_space)  # Add it at the left side
+
+        left_spacer = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        header_layout.addSpacerItem(left_spacer)
+
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        header_layout.addWidget(title)
+
+        right_spacer = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        header_layout.addSpacerItem(right_spacer)
+
+        close_button.setStyleSheet("""
+            border: none;
+            background: transparent;
+            margin-right: 8px;
+        """)
+        header_layout.addWidget(close_button)
+
+        main_layout.addLayout(header_layout)
 
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
@@ -297,7 +333,38 @@ def current_theme():
         print(f"Error detecting theme: {e}")
         return ("dark")
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Theom Notifications Viewer")
+    parser.add_argument('--position', type=str, choices=["TL", "T", "TR", "L", "C", "R", "BL", "B", "BR"], default="TR",
+                        help="Screen position (e.g. TL, T, TR, L, C, R, BL, B, BR)")
+    parser.add_argument('--margin-x', type=int, default=10, help="Horizontal margin from screen edge")
+    parser.add_argument('--margin-y', type=int, default=10, help="Vertical margin from screen edge")
+    return parser.parse_args()
+
+def compute_position(pos_str, window_geom, screen_geom, margin_x, margin_y):
+    x = screen_geom.left()
+    y = screen_geom.top()
+
+    if "T" in pos_str:
+        y = screen_geom.top() + margin_y
+    elif "B" in pos_str:
+        y = screen_geom.bottom() - window_geom.height() - margin_y
+    else:  # vertical center
+        y = screen_geom.top() + (screen_geom.height() - window_geom.height()) // 2
+
+    if "L" in pos_str:
+        x = screen_geom.left() + margin_x
+    elif "R" in pos_str:
+        x = screen_geom.right() - window_geom.width() - margin_x
+    else:  # horizontal center
+        x = screen_geom.left() + (screen_geom.width() - window_geom.width()) // 2
+
+    return x, y
+
+
 if __name__ == "__main__":
+    args = parse_args()
+
     app = QApplication(sys.argv)
     window = NotificationsWidget()
     window.setWindowTitle("Theom Notifications")
@@ -310,4 +377,11 @@ if __name__ == "__main__":
         app.setStyleSheet(stylesheet())
 
     window.show()
+
+    screen_geometry = app.primaryScreen().availableGeometry()
+    window_geometry = window.frameGeometry()
+
+    x, y = compute_position(args.position, window_geometry, screen_geometry, args.margin_x, args.margin_y)
+    window.move(x, y)
+
     sys.exit(app.exec())
