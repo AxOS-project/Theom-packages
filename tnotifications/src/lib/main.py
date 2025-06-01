@@ -206,7 +206,7 @@ class NotificationsWidget(QWidget):
 
         main_layout = QVBoxLayout(container)
         main_layout.setSpacing(10)
-        main_layout.setContentsMargins(0, 0, 0, 0)  # remove outer margins
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
         title = QLabel("Notifications")
         title.setStyleSheet("font-weight: bold; font-size: 16px; color: white;")
@@ -224,9 +224,9 @@ class NotificationsWidget(QWidget):
 
 
         dummy_space = QWidget()
-        dummy_space.setFixedSize(24, 24)  # Same fixed size as your close button
+        dummy_space.setFixedSize(24, 24)
         dummy_space.setStyleSheet("background: transparent; border: none;")
-        header_layout.insertWidget(0, dummy_space)  # Add it at the left side
+        header_layout.insertWidget(0, dummy_space) 
 
         left_spacer = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         header_layout.addSpacerItem(left_spacer)
