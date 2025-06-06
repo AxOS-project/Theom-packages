@@ -13,6 +13,7 @@ depends=(
 )
 
 package() {
+    mkdir -p "$pkgdir/usr/lib/tnotifications"
     cp -a "$srcdir/lib/." "$pkgdir/usr/lib/tnotifications/"
     install -Dm755 "$srcdir/launch-tnotification.sh" "$pkgdir/usr/bin/tnotifications"
 }
