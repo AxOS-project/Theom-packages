@@ -209,7 +209,7 @@ class NotificationsWidget(QWidget):
         main_layout.setContentsMargins(0, 0, 0, 0)
 
         title = QLabel("Notifications")
-        title.setStyleSheet("font-weight: bold; font-size: 16px; color: white;")
+        #title.setStyleSheet("font-weight: bold; font-size: 16px; color: white;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         close_button = QPushButton()

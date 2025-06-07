@@ -1,5 +1,5 @@
 pkgname=tnotifications
-pkgver=1.1
+pkgver=1.1.1
 pkgrel=1
 pkgdesc="Theom Notifications"
 arch=('x86_64')
