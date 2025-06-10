@@ -1,0 +1,14 @@
+pkgname=theom-systray
+pkgver=1.0
+pkgrel=1
+pkgdesc="Theom systray"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=(
+# Nothing yet
+)
+
+package() {
+    install -Dm755 "$srcdir/theom-systray" "$pkgdir/usr/bin/theom-systray"
+}
