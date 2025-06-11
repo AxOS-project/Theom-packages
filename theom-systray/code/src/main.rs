@@ -306,17 +306,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Unmap and reparent docked icons to root before exiting
     for (win, _) in &docked_windows {
         println!("{}", *win);
-        let _ = conn.unmap_window(*win);
+        let _ = conn.change_window_attributes(*win, &ChangeWindowAttributesAux::new().event_mask(None));
         let _ = conn.reparent_window(*win, screen.root, 0, 0);
+        let _ = conn.unmap_window(*win);
     }
 
     conn.flush()?;
 
-    println!("Destroying tray window...");
-    match conn.destroy_window(win_id) {
-        Ok(_) => println!("Tray window destroyed"),
-        Err(e) => println!("Error destroying tray window: {:?}", e),
-    }
+    // NOTE: This commented lines destroys the tray but it causes the applets to crash aswell.
+    // Well, idk why i kept this code but ig it will be a reminder to to never destroy the window?
+    //println!("Destroying tray window...");
+    //match conn.destroy_window(win_id) {
+    //    Ok(_) => println!("Tray window destroyed"),
+    //    Err(e) => println!("Error destroying tray window: {:?}", e),
+    //}
 
     conn.flush()?;
 
