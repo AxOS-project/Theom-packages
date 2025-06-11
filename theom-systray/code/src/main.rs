@@ -313,13 +313,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     conn.flush()?;
 
-    // NOTE: This commented lines destroys the tray but it causes the applets to crash aswell.
-    // Well, idk why i kept this code but ig it will be a reminder to to never destroy the window?
     //println!("Destroying tray window...");
     //match conn.destroy_window(win_id) {
     //    Ok(_) => println!("Tray window destroyed"),
     //    Err(e) => println!("Error destroying tray window: {:?}", e),
     //}
+
+    sleep(Duration::from_millis(10));
 
     conn.flush()?;
 
