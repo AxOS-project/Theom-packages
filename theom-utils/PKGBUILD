@@ -1,5 +1,5 @@
 pkgname=theom-utils
-pkgver=1.1
+pkgver=1.2
 pkgrel=1
 pkgdesc="Utilities for Theom DE"
 arch=('x86_64')
@@ -8,6 +8,7 @@ depends=(
   'theom-welcome'
   'theom-notification-history'
   'theom-dashboard'
+  'theom-systray'
   'tosd-server'
   'tosd-client'
   'tscdctl'
