@@ -1,5 +1,5 @@
 pkgname=theom-systray
-pkgver=1.0
+pkgver=1.0.1
 pkgrel=1
 pkgdesc="Theom systray"
 arch=('x86_64')
