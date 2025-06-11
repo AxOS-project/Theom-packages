@@ -7,14 +7,15 @@ use x11rb::{COPY_FROM_PARENT, CURRENT_TIME};
 use std::collections::HashMap;
 use std::mem::transmute;
 use std::sync::atomic::{AtomicBool, Ordering};
-use ctrlc;
+// use ctrlc;
 use std::sync::Arc;
 use std::thread::sleep;
 use std::time::Duration;
 use x11rb::protocol::xproto::EventMask;
 use std::collections::HashSet;
 use std::time::Instant;
-
+use signal_hook::consts::signal::*;
+use signal_hook::iterator::Signals;
 
 // import local modules
 mod args;
@@ -173,12 +174,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut docked_windows = HashMap::new();
     let mut next_x: i16 = args.padding as i16;
 
-    // Ctrl+C handler
+    // Close handler (SIGINIT for ^C and SIGTERM for detecting something like `killall`)
     let running = Arc::new(AtomicBool::new(true));
+    let mut signals = Signals::new(&[SIGINT, SIGTERM])?;
     let r = running.clone();
-    ctrlc::set_handler(move || {
-        r.store(false, Ordering::SeqCst);
-    })?;
+
+    // Spawn a thread to listen for termination signals
+    std::thread::spawn(move || {
+        for _ in signals.forever() {
+            r.store(false, Ordering::SeqCst);
+            break;
+        }
+    });
+
 
     let mut last_check = Instant::now();
 
