@@ -11,6 +11,35 @@ TSCL_FOOTER = '*//()()//* This file is auto-generated. Do not edit manually.'
 LINE_RE = re.compile(r'^&\^\*#(?P<key>[^:]+)::\<&(?P<val>".*?"|[^&]+)&>$')
 COMMENT_RE = re.compile(r'\*//\(\)\(\)//\*')
 
+####################### PRINT IMPORTANT INFO
+def print_use_info():
+    RED = "\033[91m"
+    YELLOW = "\033[93m"
+    RESET = "\033[0m"
+
+    warning = f"""
+    {RED}
+                -- THEOM SCARY CONFIG DEMON v1 --
+    ##############################################################
+    ## TSCDCTL HAS BEEN INVOKED                                 ##
+    ##                                                          ##
+    ## THIS TOOL IS PART OF THE T.S.C.D. INTERNAL SYSTEM        ##
+    ## IT IS NOT MEANT FOR HUMAN INTERACTION.                   ##
+    ##                                                          ##
+    ## NO GUARANTEES. NO HELP. NO WARRANTY.                     ##
+    ##                                                          ##
+    ## >> Proceed if you are developing THEOM.                  ##
+    ## >> Otherwise, press Ctrl+C and walk away.                ##
+    ##############################################################
+    {RESET}
+    """
+
+    print(warning)
+
+print_use_info()
+
+####################### END OF IMPORTANT INFO
+
 def infer_type(val):
     return val
 
