@@ -47,7 +47,7 @@ class OSDPage(QWidget):
             with open(config_path, 'r') as file:
                 try:
                     config = tomlkit.parse(file.read())
-                    osd_value = str(config.get("features", {}).get("osd", "true")).lower()
+                    osd_value = str(config.get("osd", {}).get("osd", "true")).lower()
                 except Exception as e:
                     print(f"Failed to load TOML config: {e}")
 
@@ -78,10 +78,10 @@ class OSDPage(QWidget):
         else:
             config = tomlkit.document()
 
-        if "features" not in config:
-            config["features"] = tomlkit.table()
+        if "osd" not in config:
+            config["osd"] = tomlkit.table()
 
-        config["features"]["osd"] = new_osd_value == "true"
+        config["osd"]["osd"] = new_osd_value == "true"
 
         with open(config_path, 'w') as file:
             file.write(tomlkit.dumps(config))

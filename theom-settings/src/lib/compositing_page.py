@@ -47,7 +47,7 @@ class CompositingPage(QWidget):
             with open(config_path, 'r') as file:
                 try:
                     config = tomlkit.parse(file.read())
-                    compositing = str(config.get("features", {}).get("compositing", "true")).lower()
+                    compositing = str(config.get("compositing", {}).get("compositing", "true")).lower()
                 except Exception as e:
                     print(f"Failed to load TOML config: {e}")
 
@@ -79,10 +79,10 @@ class CompositingPage(QWidget):
         else:
             config = tomlkit.document()
 
-        if "features" not in config:
-            config["features"] = tomlkit.table()
+        if "compositing" not in config:
+            config["compositing"] = tomlkit.table()
 
-        config["features"]["compositing"] = new_compositing_value == "true"
+        config["compositing"]["compositing"] = new_compositing_value == "true"
 
         with open(config_path, 'w') as file:
             file.write(tomlkit.dumps(config))
