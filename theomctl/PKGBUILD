@@ -1,0 +1,14 @@
+pkgname=theomctl
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Theom control utility"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+depends=(
+# nothing
+)
+
+package() {
+    install -Dm755 "$srcdir/bin/theomctl" "$pkgdir/usr/bin/theomctl"
+}
