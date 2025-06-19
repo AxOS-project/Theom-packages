@@ -40,7 +40,7 @@ class CompositingPage(QWidget):
         self.load_saved_config()
 
     def load_saved_config(self):
-        config_path = os.path.expanduser('~/.config/.theom/config.toml')
+        config_path = os.path.expanduser('~/.config/theom/config.toml')
         compositing = 'true' 
 
         if os.path.exists(config_path):
@@ -68,7 +68,7 @@ class CompositingPage(QWidget):
     def apply_changes(self):
         new_compositing_value = self.enableCompositing.currentText()
 
-        config_path = os.path.expanduser('~/.config/.theom/config.toml')
+        config_path = os.path.expanduser('~/.config/theom/config.toml')
 
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:

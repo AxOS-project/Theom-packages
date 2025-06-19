@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
     QLabel, QCheckBox, QScrollArea
 )
 
-CONFIG_PATH = os.path.expanduser("~/.config/.theom/config.toml")
+CONFIG_PATH = os.path.expanduser("~/.config/theom/config.toml")
 WELCOMER_STATE_PATH = os.path.expanduser("~/.local/state/theom/welcomer.state")
 
 class WelcomeApp(QWidget):

@@ -40,7 +40,7 @@ class OSDPage(QWidget):
         self.load_saved_config()
 
     def load_saved_config(self):
-        config_path = os.path.expanduser('~/.config/.theom/config.toml')
+        config_path = os.path.expanduser('~/.config/theom/config.toml')
         osd_value = 'true'
 
         if os.path.exists(config_path):
@@ -67,7 +67,7 @@ class OSDPage(QWidget):
     def apply_changes(self):
         new_osd_value = self.enableOSD.currentText()
 
-        config_path = os.path.expanduser('~/.config/.theom/config.toml')
+        config_path = os.path.expanduser('~/.config/theom/config.toml')
 
         if os.path.exists(config_path):
             with open(config_path, 'r') as file:

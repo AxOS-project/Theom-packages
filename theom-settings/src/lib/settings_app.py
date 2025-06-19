@@ -114,7 +114,7 @@ class SettingsApp(QWidget):
 
     def set_wallpaper(self, wallpaper):
         print(f"Setting wallpaper: {wallpaper}")
-        config_toml_path = os.path.expanduser('~/.config/.theom/config.toml')
+        config_toml_path = os.path.expanduser('~/.config/theom/config.toml')
 
         if os.path.exists(config_toml_path):
             with open(config_toml_path, 'r') as file:

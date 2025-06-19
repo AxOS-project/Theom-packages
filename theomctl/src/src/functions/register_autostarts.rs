@@ -5,11 +5,11 @@ use std::env::var;
 
 fn get_config_dir() -> PathBuf {
     if let Ok(xdg) = var("XDG_CONFIG_HOME") {
-        PathBuf::from(xdg).join(".theom-autostarts")
+        PathBuf::from(xdg).join("theom-autostarts")
     } else {
         dirs::home_dir()
             .expect("Could not find home directory")
-            .join(".config/.theom-autostarts")
+            .join(".config/theom-autostarts")
     }
 }
 
