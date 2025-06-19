@@ -10,5 +10,5 @@ depends=(
 )
 
 package() {
-    install -Dm755 "$srcdir/tosd-client" "$pkgdir/usr/bin/tosd-client"
+    install -Dm755 "$srcdir/bin/tosd-client" "$pkgdir/usr/bin/tosd-client"
 }

@@ -10,5 +10,5 @@ depends=(
 )
 
 package() {
-    install -Dm755 "$srcdir/theom-systray" "$pkgdir/usr/bin/theom-systray"
+    install -Dm755 "$srcdir/bin/theom-systray" "$pkgdir/usr/bin/theom-systray"
 }
