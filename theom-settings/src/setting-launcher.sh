@@ -1,2 +1,2 @@
 #!/bin/sh
-exec python3 /usr/lib/theom-settings/main.py "$@"
+exec /usr/lib/theom-settings/theom_settings "$@"

@@ -1,20 +1,15 @@
 pkgname=theom-settings
-pkgver=1.10
+pkgver=1.11
 pkgrel=1
 pkgdesc="Settings of theom"
 arch=('x86_64')
 url="https://github.com/AxOS-project/Theom-packages"
 license=('MIT')
-depends=(
-    'python'
-    'python-tomlkit'
-    'python-pyqt6'
-    'qt6-base'
-    'python-pyqt6-sip'
-)
+depends=('gtk3')
+makedepends=('flutter')
 
 package() {
-    install -Dm755 $srcdir/lib/* -t "$pkgdir/usr/lib/theom-settings/"
+    install -Dm755 $srcdir/src/bundle/* -t "$pkgdir/usr/lib/theom-settings/"
 
     install -Dm755 "$srcdir/setting-launcher.sh" "$pkgdir/usr/bin/theom-settings"
     
