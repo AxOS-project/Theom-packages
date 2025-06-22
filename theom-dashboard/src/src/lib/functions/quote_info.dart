@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
+import 'package:flutter/services.dart' show rootBundle;
 
 class Quote {
   final String quote;
@@ -18,12 +18,7 @@ class Quote {
 
 Future<Quote> getRandomQuote() async {
   try {
-    final file = File('lib/quotes.json');
-    if (!await file.exists()) {
-      return Quote(quote: "No quotes available.", author: "");
-    }
-
-    final content = await file.readAsString();
+    final content = await rootBundle.loadString('lib/quotes.json');
     final List<dynamic> data = jsonDecode(content);
 
     final quotes = data.map((e) => Quote.fromJson(e)).toList();
