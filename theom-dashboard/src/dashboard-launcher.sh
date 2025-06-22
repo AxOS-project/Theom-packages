@@ -1,2 +1,2 @@
 #!/bin/sh
-exec python3 /usr/lib/theom-dashboard/main.py "$@"
+exec /usr/lib/theom-dashboard/theom_dashboard "$@"

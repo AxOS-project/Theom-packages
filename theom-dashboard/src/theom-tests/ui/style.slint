@@ -1,0 +1,20 @@
+// theme options
+export enum Theme {
+    light,
+    dark
+}
+
+// theme color selection
+export global ThemeManager {
+    // colors
+    in-out property<Theme> current-theme: Theme.dark;
+
+    in-out property<color> background-color: 
+        current-theme == Theme.dark ? #161416 : #e2c79d;
+    in-out property <color> content-bg-color:
+        current-theme == Theme.dark ? #1e1e1e : #efe1ca;
+    in-out property<color> text-color: 
+        current-theme == Theme.dark ? #ffffff : #000000;
+
+    // font sizes
+}

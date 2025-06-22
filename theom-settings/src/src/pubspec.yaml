@@ -2,7 +2,7 @@ name: theom_settings
 description: "Settings of theom desktop environment."
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.11.0+1
 
 environment:
   sdk: ^3.8.1
