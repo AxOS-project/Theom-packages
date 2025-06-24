@@ -2,7 +2,6 @@
 
 import sys
 import os
-import tomlkit
 import subprocess
 #import webbrowser
 from PyQt6.QtCore import Qt
@@ -22,8 +21,6 @@ class WelcomeApp(QWidget):
         self.setWindowTitle("Welcome to Theom")
         self.setFixedSize(500, 402)
         self.setStyleSheet(self.base_stylesheet())
-
-        self.config = self.load_config()
 
         self.stacked_widget = QStackedWidget(self)
         self.init_ui()
@@ -180,34 +177,30 @@ class WelcomeApp(QWidget):
         except FileNotFoundError:
             print(f"Feature '{f}' not available.")
 
-    def load_config(self):
-        if os.path.exists(CONFIG_PATH):
-            with open(CONFIG_PATH, 'r') as f:
-                return tomlkit.parse(f.read())
-        return tomlkit.document()
+    def update_config(self, key, value, section):
+        subprocess.Popen(
+            ["theom-config", "set", f"{section}.{key}", str(value)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
-    def update_config(self, key, value, section=None):
-        os.makedirs(os.path.dirname(CONFIG_PATH), exist_ok=True)
 
-        if os.path.exists(CONFIG_PATH):
-            with open(CONFIG_PATH, 'r') as f:
-                config = tomlkit.parse(f.read())
-        else:
-            config = tomlkit.document()
-
-        if section:
-            if section not in config:
-                config[section] = tomlkit.table()
-            config[section][key] = value
-        else:
-            config[key] = value
-
-        with open(CONFIG_PATH, 'w') as f:
-            f.write(tomlkit.dumps(config))
-
-        print(tomlkit.dumps(config))
-        self.config = config
-
+    def get_config_value(self, key, section, default=True):
+        try:
+            result = subprocess.run(
+                ["theom-config", f"{section}.{key}"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            value = result.stdout.strip().lower()
+            if value in ["true", "1", "yes"]:
+                return True
+            elif value in ["false", "0", "no"]:
+                return False
+        except subprocess.CalledProcessError:
+            pass  # theom-config failed
+        return default
 
 
     def on_checkbox_changed(self, state):
@@ -217,11 +210,11 @@ class WelcomeApp(QWidget):
 
     def on_compositing_checkbox_changed(self, state):
         enable_compositing = state == Qt.CheckState.Checked.value
-        self.update_config("compositing", enable_compositing, section="features")
+        self.update_config("compositing", enable_compositing, section="compositor")
 
     def on_osd_checkbox_changed(self, state):
         enable_osd = state == Qt.CheckState.Checked.value
-        self.update_config("osd", enable_osd, section="features")
+        self.update_config("osd", enable_osd, section="osd")
 
     def create_checkbox_row(self):
         layout = QHBoxLayout()
@@ -237,7 +230,7 @@ class WelcomeApp(QWidget):
     def create_compositing_checkbox(self):
         layout = QHBoxLayout()
         self.compositing_checkbox = QCheckBox("Enable compositing")
-        self.compositing_checkbox.setChecked(self.config.get("compositing", True))
+        self.compositing_checkbox.setChecked(self.get_config_value("compositing",section="compositor", default=True))
         self.compositing_checkbox.stateChanged.connect(self.on_compositing_checkbox_changed)
         self.compositing_checkbox.setStyleSheet("padding-left: 10px;")
         self.compositing_checkbox.setToolTip("Enabling compositing is recommended for better performance and visual effects.")
@@ -247,7 +240,7 @@ class WelcomeApp(QWidget):
     def create_osd_checkbox(self):
         layout = QHBoxLayout()
         self.osd_checkbox = QCheckBox("Enable on screen display effects")
-        self.osd_checkbox.setChecked(self.config.get("features", {}).get("osd", True))
+        self.osd_checkbox.setChecked(self.get_config_value("osd", section="osd", default=True))
         self.osd_checkbox.stateChanged.connect(self.on_osd_checkbox_changed)
         self.osd_checkbox.setStyleSheet("padding-left: 10px;")
         self.osd_checkbox.setToolTip("If enabled, it will show effects on the screen if certain actions are performed.")
