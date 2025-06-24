@@ -173,7 +173,7 @@ class WelcomeApp(QWidget):
             elif f == "Explore the settings":
                 subprocess.Popen(["theom-settings"])
             elif f == "View keybindings":
-                subprocess.Popen("/usr/lib/theom-welcome/theom-keybindings")
+                subprocess.Popen(["tcheatsheet"])
         except FileNotFoundError:
             print(f"Feature '{f}' not available.")
 

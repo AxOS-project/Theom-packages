@@ -1,0 +1,16 @@
+pkgname=tcheatsheet
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Theom Cheatsheet"
+arch=('x86_64')
+url="https://github.com/AxOS-project/Theom-packages"
+license=('MIT')
+makedepends=('rust' 'cargo')
+depends=(
+    'webkit2gtk'
+    'gtk3'
+)
+
+package() {
+    install -Dm755 "$srcdir/bin/tcheatsheet" -t "$pkgdir/usr/bin"
+}

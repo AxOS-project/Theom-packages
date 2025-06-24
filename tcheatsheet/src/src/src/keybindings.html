@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Keyboard Shortcuts</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #121212;
+        color: #eee;
+        padding: 2em;
+        line-height: 1.5;
+      }
+      h1 {
+        color: #8be9fd;
+        margin-bottom: 0.2em;
+      }
+      h2 {
+        color: #50fa7b;
+        margin-top: 1.5em;
+      }
+      p.important {
+        font-style: italic;
+        color: #f1fa8c;
+      }
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+      li {
+        padding: 0.2em 0;
+      }
+      code {
+        background: #282a36;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+        color: #f8f8f2;
+      }
+      .keybinding {
+        margin-bottom: 0.6em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Keyboard shortcuts</h1>
+
+    <p class="important">Important</p>
+    <p>The <code>mod</code> key is the windows key on your device.</p>
+
+    <h2>Essentials</h2>
+    <ul>
+      <li class="keybinding">
+        <code>mod+Return</code> — Open terminal (opens the default terminal -
+        Alacritty)
+      </li>
+      <li class="keybinding">
+        <code>mod+d</code> — Launch application launcher (Rofi is the default)
+      </li>
+      <li class="keybinding">
+        <code>mod+Shift+d</code> — Open Theom dashboard
+      </li>
+      <li class="keybinding">
+        <code>mod+Shift+q</code> — Close the focused window
+      </li>
+      <li class="keybinding">
+        <code>mod+f</code> — Toggle fullscreen for the focused window
+      </li>
+      <li class="keybinding">
+        <code>mod+Shift+space</code> — Toggle floating mode for the focused
+        window
+      </li>
+      <li class="keybinding">
+        <code>mod+space</code> — Toggle focus between tiling and floating
+        windows
+      </li>
+      <li class="keybinding">
+        <code>mod+Shift+e</code> — Exit i3 with confirmation
+      </li>
+      <li class="keybinding">
+        <code>Print</code> — Take a screenshot using Flameshot
+      </li>
+    </ul>
+
+    <h2>Workspace Management</h2>
+    <ul>
+      <li class="keybinding">
+        <code>mod+1 through mod+0</code> — Switch to workspace 1–10
+      </li>
+      <li class="keybinding">
+        <code>mod+Shift+1 through mod+Shift+0</code> — Move focused window to
+        workspace 1–10
+      </li>
+    </ul>
+
+    <h2>Window Focus</h2>
+    <ul>
+      <li class="keybinding"><code>mod+j</code> — Focus left</li>
+      <li class="keybinding"><code>mod+k</code> — Focus down</li>
+      <li class="keybinding"><code>mod+l</code> — Focus up</li>
+      <li class="keybinding"><code>mod+semicolon</code> — Focus right</li>
+      <li class="keybinding">
+        <code>mod+Left/Down/Up/Right</code> — Focus window in that direction
+      </li>
+      <li class="keybinding">
+        <code>mod+a</code> — Focus the parent container
+      </li>
+    </ul>
+
+    <h2>Window Movement</h2>
+    <ul>
+      <li class="keybinding"><code>mod+Shift+j</code> — Move window left</li>
+      <li class="keybinding"><code>mod+Shift+k</code> — Move window down</li>
+      <li class="keybinding"><code>mod+Shift+l</code> — Move window up</li>
+      <li class="keybinding">
+        <code>mod+Shift+semicolon</code> — Move window right
+      </li>
+      <li class="keybinding">
+        <code>mod+Shift+Left/Down/Up/Right</code> — Move window using arrow keys
+      </li>
+    </ul>
+
+    <h2>Layout</h2>
+    <ul>
+      <li class="keybinding">
+        <code>mod+h</code> — Split container horizontally
+      </li>
+      <li class="keybinding">
+        <code>mod+v</code> — Split container vertically
+      </li>
+      <li class="keybinding"><code>mod+e</code> — Toggle split orientation</li>
+      <li class="keybinding"><code>mod+s</code> — Set layout to stacking</li>
+      <li class="keybinding"><code>mod+w</code> — Set layout to tabbed</li>
+    </ul>
+
+    <h2>Scratchpad</h2>
+    <ul>
+      <li class="keybinding">
+        <code>mod+minus</code> — Move the currently focused window to the
+        scratchpad
+      </li>
+      <li class="keybinding">
+        <code>mod+Shift+minus</code> — Show the first window from the scratchpad
+      </li>
+    </ul>
+
+    <h2>Resize Mode</h2>
+    <ul>
+      <li class="keybinding"><code>mod+r</code> — Enter resize mode</li>
+      <li class="keybinding"><code>j / Left</code> — Shrink width</li>
+      <li class="keybinding"><code>k / Down</code> — Grow height</li>
+      <li class="keybinding"><code>l / Up</code> — Shrink height</li>
+      <li class="keybinding"><code>semicolon / Right</code> — Grow width</li>
+      <li class="keybinding">
+        <code>Enter / Escape / mod+r</code> — Exit resize mode
+      </li>
+    </ul>
+
+    <h2>System</h2>
+    <p>
+      The following keybindings are the function keys in your keyboard. For
+      example, <code>XF86MonBrightnessUp</code> is the f3 key in my keyboard.
+    </p>
+    <ul>
+      <li class="keybinding">
+        <code>XF86MonBrightnessUp</code> — Increase brightness (via
+        brightnessctl)
+      </li>
+      <li class="keybinding">
+        <code>XF86MonBrightnessDown</code> — Decrease brightness
+      </li>
+      <li class="keybinding">
+        <code>XF86AudioRaiseVolume</code> — Increase volume
+      </li>
+      <li class="keybinding">
+        <code>XF86AudioLowerVolume</code> — Decrease volume
+      </li>
+      <li class="keybinding"><code>XF86AudioMute</code> — Toggle audio mute</li>
+      <li class="keybinding">
+        <code>XF86AudioMicMute</code> — Toggle microphone mute
+      </li>
+    </ul>
+  </body>
+</html>
