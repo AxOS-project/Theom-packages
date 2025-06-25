@@ -98,7 +98,7 @@ class WelcomeApp(QWidget):
 
 
         #layout.addLayout(self.create_compositing_checkbox())
-        layout.addLayout(self.create_osd_checkbox())
+        #layout.addLayout(self.create_osd_checkbox())
 
         layout.addWidget(self.create_feature_list())
         layout.addSpacerItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
