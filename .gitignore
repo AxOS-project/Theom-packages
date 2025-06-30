@@ -2,3 +2,4 @@ out/
 pkg/
 __pycache__/
 target/
+*.pkg.tar.zst

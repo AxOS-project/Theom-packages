@@ -16,6 +16,7 @@ use std::collections::HashSet;
 use std::time::Instant;
 use signal_hook::consts::signal::*;
 use signal_hook::iterator::Signals;
+use x11rb::protocol::xproto::PropMode;
 
 // import local modules
 mod args;
@@ -133,6 +134,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     conn.map_window(win_id)?;
     conn.flush()?;
     println!("Tray window created: {}", win_id);
+
+    // Set WM_CLASS so compositors and window managers can categorize the window
+    let wm_class_atom = conn.intern_atom(false, b"WM_CLASS")?.reply()?.atom;
+    let class_str = b"theom-systray\0Theom-Systray\0";
+    conn.change_property(
+        PropMode::REPLACE,
+        win_id,
+        wm_class_atom,
+        AtomEnum::STRING,
+        8,
+        class_str.len() as u32,
+        class_str,
+    )?;
 
     // Set up atoms
     let tray_atom_str = format!("_NET_SYSTEM_TRAY_S{}", screen_num);
@@ -314,9 +328,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Unmap and reparent docked icons to root before exiting
     for (win, _) in &docked_windows {
         println!("{}", *win);
-        let _ = conn.change_window_attributes(*win, &ChangeWindowAttributesAux::new().event_mask(None));
-        let _ = conn.reparent_window(*win, screen.root, 0, 0);
+        let _ = conn.change_window_attributes(
+            *win,
+            &ChangeWindowAttributesAux::new().event_mask(EventMask::NO_EVENT),
+        );
         let _ = conn.unmap_window(*win);
+        std::thread::sleep(std::time::Duration::from_millis(10)); // delay to prevent bugs
+        let _ = conn.reparent_window(*win, screen.root, 0, 0);
     }
 
     conn.flush()?;
