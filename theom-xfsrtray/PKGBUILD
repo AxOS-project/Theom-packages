@@ -8,6 +8,8 @@ arch=('x86_64')
 url="https://github.com/Byson94/xfsrtray"
 license=('GPL')
 depends=()
+provides=('xfsrtray')
+conflicts=('xfsrtray-bin' 'xfsrtray-git')
 makedepends=('cargo')
 
 build() {

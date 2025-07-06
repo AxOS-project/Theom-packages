@@ -226,6 +226,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "theom-xfsrtray"
+version = "1.0.2"
+dependencies = [
+ "clap",
+ "signal-hook",
+ "x11rb",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -361,13 +370,4 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "82d6c3f9a0fb6701fab8f6cea9b0c0bd5d6876f1f89f7fada07e558077c344bc"
 dependencies = [
  "nix",
-]
-
-[[package]]
-name = "xfsrtray"
-version = "1.0.2"
-dependencies = [
- "clap",
- "signal-hook",
- "x11rb",
 ]
