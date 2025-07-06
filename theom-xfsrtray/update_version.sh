@@ -17,8 +17,8 @@ else
   exit 1
 fi
 
-# Update Cargo.toml (src/)
-cargo_toml="src/Cargo.toml"
+# Update Cargo.toml
+cargo_toml="./Cargo.toml"
 if [[ -f "$cargo_toml" ]]; then
   awk -v ver="$new_version" '
     BEGIN { in_package = 0 }

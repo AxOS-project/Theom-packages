@@ -137,7 +137,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Set WM_CLASS so compositors and window managers can categorize the window
     let wm_class_atom = conn.intern_atom(false, b"WM_CLASS")?.reply()?.atom;
-    let class_str = b"theom-systray\0Theom-Systray\0";
+    let class_str = b"xfsrtray\0xfsrtray\0";
     conn.change_property(
         PropMode::REPLACE,
         win_id,

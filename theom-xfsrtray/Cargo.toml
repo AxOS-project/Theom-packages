@@ -1,7 +1,8 @@
 [package]
-name = "theom-systray"
-version = "1.1.1"
+name = "xfsrtray"
+version = "1.0.2"
 edition = "2024"
+license = "GPL-3.0-or-later"
 
 [dependencies]
 x11rb = "0.12.0"

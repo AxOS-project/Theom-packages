@@ -8,7 +8,7 @@ depends=(
   'theom-welcome'
   'theom-notification-history'
   'theom-dashboard'
-  'theom-systray'
+  'theom-xfsrtray'
   'tosd-server'
   'tosd-client'
   'tscdctl'
