@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'general_settings.dart';
 import 'system_settings.dart';
 import 'about_settings.dart';
+import 'looks_settings.dart';
 
 class SettingsHomePage extends StatefulWidget {
   const SettingsHomePage({super.key});
@@ -12,7 +13,7 @@ class SettingsHomePage extends StatefulWidget {
 
 class _SettingsHomePageState extends State<SettingsHomePage> {
   int selectedIndex = 0;
-  final List<String> sections = ['General', 'System', 'About'];
+  final List<String> sections = ['General', 'Looks', 'System', 'About'];
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,10 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
               NavigationRailDestination(
                 icon: Icon(Icons.settings),
                 label: Text('General'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.brush),
+                label: Text('Looks'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.computer),
@@ -59,6 +64,8 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
     switch (section) {
       case 'General':
         return const GeneralSettings();
+      case 'Looks':
+        return const LooksSettings();
       case 'System':
         return const SystemSettings();
       case 'About':

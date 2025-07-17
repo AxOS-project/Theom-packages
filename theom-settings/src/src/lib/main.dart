@@ -19,6 +19,9 @@ void main() async {
     'bar.use_eww',
     // General keys
     'appearance.theme',
+    // Looks keys
+    'compositor.animations',
+    'appearance.wallpaper'
   ]);
 
   runApp(SettingsApp(themeMode: themeMode));

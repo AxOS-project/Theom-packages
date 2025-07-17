@@ -4,7 +4,7 @@ set -e
 
 cd ./src # src = flutter project
 
-if [ $1 = "--fresh" ]; then
+if [ "$1" = "--fresh" ]; then
     flutter clean
 fi
 
