@@ -1,7 +1,9 @@
 import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("PangoCairo", "1.0")
-from gi.repository import Gtk, Gdk, GLib, Pango, PangoCairo
+gi.require_version("GdkPixbuf", "2.0")
+from gi.repository import Gtk, Gdk, GLib, Pango, PangoCairo, GdkPixbuf
+import re
 
 _reuse_next_window = False
 _osd_windows = []
@@ -123,9 +125,65 @@ class OSDWindow(Gtk.Window):
         return False  # Stop timeout
 
     def measure_text_width(self, text):
-        self.layout.set_text(text, -1)
+        icon_size = int(28 * self.size)  # Match with icon rendering size
+        icon_spacing = int(22 * self.size)  # Some breathing room
+
+        icon_count = len(re.findall(r"//(.*?)//", text))
+        clean_text = re.sub(r"//(.*?)//", "", text)
+
+        self.layout.set_text(clean_text, -1)
         width, _ = self.layout.get_pixel_size()
-        return width
+
+        total_icon_space = icon_count * (icon_size + icon_spacing)
+        return width + total_icon_space
+
+
+    def draw_text_with_icons(self, cr, text, layout, x, y):
+        _, text_height = layout.get_pixel_size()
+        icon_size = text_height # Match icon size to font height
+
+        pattern = re.compile(r"//(.*?)//")
+        parts = []
+        last_end = 0
+        for match in pattern.finditer(text):
+            if match.start() > last_end:
+                parts.append(("text", text[last_end:match.start()]))
+            parts.append(("icon", match.group(1)))
+            last_end = match.end()
+        if last_end < len(text):
+            parts.append(("text", text[last_end:]))
+
+        cursor_x = x
+        icon_theme = Gtk.IconTheme.get_default()
+
+        for kind, content in parts:
+            if kind == "text":
+                layout.set_text(content, -1)
+                cr.move_to(cursor_x, y)
+                PangoCairo.show_layout(cr, layout)
+                width, _ = layout.get_pixel_size()
+                cursor_x += width
+            elif kind == "icon":
+                if icon_theme.has_icon(content):
+                    try:
+                        base_pixbuf = icon_theme.load_icon(content, icon_size, 0)
+                        pixbuf = base_pixbuf.scale_simple(icon_size, icon_size, GdkPixbuf.InterpType.BILINEAR)
+                        icon_width = pixbuf.get_width()
+                        icon_height = pixbuf.get_height()
+                        _, text_height = layout.get_pixel_size()
+
+                        # Vertical centering
+                        icon_y = y + (text_height - icon_height) // 2
+
+                        Gdk.cairo_set_source_pixbuf(cr, pixbuf, cursor_x, icon_y)
+                        cr.paint()
+                        cursor_x += icon_width + 4
+                    except Exception as e:
+                        print(f"Error loading icon '{content}': {e}")
+
+                else:
+                    print(f"[warn] Icon not found: {content}")
+
 
     def on_draw(self, widget, cr):
         # Set background color
@@ -147,7 +205,14 @@ class OSDWindow(Gtk.Window):
             elif self.mode == "text":
                 full_text = f"{self.text}: {self.value}" if self.text and self.value is not None else str(self.value or self.text)
                 self.layout.set_text(full_text, -1)
-            PangoCairo.show_layout(cr, self.layout)
+            self.draw_text_with_icons(
+                cr,
+                self.text,
+                self.layout,
+                int(20 * self.size),
+                text_y
+            )
+
 
         if self.mode == "slider":
             bar_x0 = self.text_width + self.gap + int(20 * self.size) if self.text else int(20 * self.size)
