@@ -4,6 +4,9 @@ import '../widgets/config_dropdown_tile.dart';
 import '../widgets/config_toggle_tile.dart';
 import '../widgets/config_textfield_tile.dart';
 import '../widgets/settings_section_title.dart';
+import '../widgets/theme_selector_tile.dart';
+import '../widgets/animation_selector_tile.dart';
+import '../widgets/wallpaperpath_selector_tile.dart';
 
 class LooksSettings extends StatefulWidget {
   const LooksSettings({super.key});
@@ -41,24 +44,30 @@ class _LooksSettingsState extends State<LooksSettings> {
     //  return const Center(child: CircularProgressIndicator());
     //}
 
-    return ListView(
-      children: [
-        const SettingsSectionTitle('Animations'),
-        ConfigDropdownTile(
-          title: 'Compositor Animations',
-          keyPath: 'compositor.animations',
-          currentValue: ConfigCache().get('compositor.animations') ?? '',
-          options: ['none', 'basic', 'fancy'],
-          onChanged: (val) => _updateValue('compositor.animations', val),
-        ),
-        const SettingsSectionTitle('Wallpaper'),
-        ConfigTextFieldTile(
-          title: 'Wallpaper Path',
-          keyPath: 'appearance.wallpaper',
-          currentValue: ConfigCache().get('appearance.wallpaper') ?? '',
-          onChanged: (val) => _updateValue('appearance.wallpaper', val),
-        ),
-      ],
-    );
+return ListView(
+  padding: const EdgeInsets.all(16),
+  children: [
+    const SettingsSectionTitle('Theme'),
+    ThemeSelectorTile(
+      currentTheme: ConfigCache().get('appearance.theme') ?? 'light',
+      onChanged: (val) => _updateValue('appearance.theme', val),
+    ),
+
+    const SizedBox(height: 24),
+    const SettingsSectionTitle('Animations'),
+    AnimationSelectorTile(
+      currentAnimation: ConfigCache().get('compositor.animations') ?? 'none',
+      onChanged: (val) => _updateValue('compositor.animations', val),
+    ),
+
+    const SizedBox(height: 24),
+    const SettingsSectionTitle('Wallpaper'),
+    WallpaperSelectorTile(
+      wallpaperPath: ConfigCache().get('appearance.wallpaper') ?? '',
+      onChange: (val) => _updateValue('appearance.wallpaper', val),
+    ),
+  ],
+);
+
   }
 }

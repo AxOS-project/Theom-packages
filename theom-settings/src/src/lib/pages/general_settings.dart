@@ -3,7 +3,6 @@ import 'package:process_run/process_run.dart';
 import '../config/cache.dart';
 import '../widgets/settings_tile.dart';
 import '../widgets/settings_section_title.dart';
-import '../widgets/config_dropdown_tile.dart';
 
 class GeneralSettings extends StatefulWidget {
   const GeneralSettings({super.key});
@@ -14,16 +13,13 @@ class GeneralSettings extends StatefulWidget {
 
 class _GeneralSettingsState extends State<GeneralSettings> {
   final keys = ['appearance.theme'];
-
   bool loading = true;
 
   @override
   void initState() {
     super.initState();
     ConfigCache().loadOnce(keys).then((_) {
-      setState(() {
-        loading = false;
-      });
+      setState(() => loading = false);
     });
   }
 
@@ -32,30 +28,73 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     setState(() {});
   }
 
+  Widget buildCard({
+    required String title,
+    String? subtitle,
+    IconData? icon,
+    VoidCallback? onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(12),
+        color: Theme.of(context).colorScheme.surface,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                      ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                        ),
+                      ]
+                    ],
+                  ),
+                ),
+                if (icon != null)
+                  Icon(
+                    icon,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    //if (loading) {
-    //  return const Center(child: CircularProgressIndicator());
-    //}
+    if (loading) return const Center(child: CircularProgressIndicator());
 
     return ListView(
+      padding: const EdgeInsets.only(bottom: 24),
       children: [
         const SettingsSectionTitle('General'),
-        SettingsTile(
+        buildCard(
           title: 'Open GTK Theme Manager',
           subtitle: 'Launch lxappearance',
-          trailingIcon: Icons.open_in_new,
-          onTap: () async {
-            await run('lxappearance', []);
-          },
-        ),
-        const SizedBox(height: 8),
-        ConfigDropdownTile(
-          title: 'Theme',
-          keyPath: 'appearance.theme',
-          currentValue: ConfigCache().get('appearance.theme') ?? '',
-          options: ['light', 'dark'],
-          onChanged: (val) => _updateValue('appearance.theme', val),
+          icon: Icons.open_in_new,
+          onTap: () => run('lxappearance', []),
         ),
       ],
     );

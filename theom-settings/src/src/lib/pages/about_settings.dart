@@ -46,28 +46,42 @@ class _AboutSettingsState extends State<AboutSettings> {
     });
   }
 
+  Widget buildCard(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(12),
+        color: Theme.of(context).colorScheme.surface,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     if (loading) return const Center(child: CircularProgressIndicator());
 
     return ListView(
+      padding: const EdgeInsets.only(bottom: 24),
       children: [
         const SettingsSectionTitle('Hardware'),
-        SettingsTile(title: 'Device Name: ${info['device']}'),
-        const SizedBox(height: 8),
-        SettingsTile(title: 'CPU(s): ${info['cpu']}'),
-        const SizedBox(height: 8),
-        SettingsTile(title: 'GPU(s): ${info['gpu']}'),
-        const SizedBox(height: 8),
-        SettingsTile(title: 'Memory: ${info['mem']}'),
-        const SizedBox(height: 8),
+        buildCard('Device Name: ${info['device']}'),
+        buildCard('CPU(s): ${info['cpu']}'),
+        buildCard('GPU(s): ${info['gpu']}'),
+        buildCard('Memory: ${info['mem']}'),
         const SettingsSectionTitle('Software'),
-        SettingsTile(title: 'OS: ${info['os']}'),
-        const SizedBox(height: 8),
-        SettingsTile(title: 'Kernel: ${info['kernel']}'),
-        const SizedBox(height: 8),
-        SettingsTile(title: 'Theom Version: ${info['theom']}'),
+        buildCard('OS: ${info['os']}'),
+        buildCard('Kernel: ${info['kernel']}'),
+        buildCard('Theom Version: ${info['theom']}'),
       ],
     );
   }
