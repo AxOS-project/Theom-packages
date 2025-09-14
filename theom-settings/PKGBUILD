@@ -1,12 +1,12 @@
 pkgname=theom-settings
-pkgver=1.12
+pkgver=1.13
 pkgrel=1
 pkgdesc="Settings of theom"
 arch=('x86_64')
 url="https://github.com/AxOS-project/Theom-packages"
 license=('MIT')
 depends=('gtk3')
-makedepends=('flutter')
+makedepends=('flutter' 'zenity')
 
 package() {
     mkdir -p "$pkgdir/usr/lib/theom-settings/"
