@@ -24,7 +24,7 @@ class DashboardPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // ───── Row 1: Uptime + Actions ─────
+            // ==== Row 1: Uptime + Actions ====
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
@@ -58,7 +58,7 @@ class DashboardPage extends StatelessWidget {
 
             const SizedBox(height: 4),
 
-            // ───── Row 2: User | Time | Weather | Quote ─────
+            // ==== Row 2: User | Time | Weather | Quote ====
             Expanded(
               flex: 3,
               child: Row(
@@ -111,7 +111,7 @@ class DashboardPage extends StatelessWidget {
               ),
             ),
 
-            // ───── Row 3: Sys Info + Sliders ─────
+            // ==== Row 3: Sys Info + Sliders ====
             Expanded(
               flex: 3,
               child: Row(

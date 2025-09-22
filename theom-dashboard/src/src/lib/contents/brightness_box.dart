@@ -45,7 +45,7 @@ class _BrightnessBoxState extends State<BrightnessBox> {
               value: _brightness,
               onChanged: _onChange,
               onChangeEnd: _onChangeEnd,
-              min: 0,
+              min: 5, // "0" fully dims the screen
               max: 100,
             ),
           ),
