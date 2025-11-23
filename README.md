@@ -1,3 +1,3 @@
 # Theom packages
 
-The packages for theom.
+A collection of packages built exclusively for Theom.
