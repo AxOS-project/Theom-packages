@@ -8,7 +8,7 @@ depends=(
   'mate-calc'
   'vim'
   'xarchiver'
-  'pcmanfm'
+  'thunar'
   'flameshot'
   'parcellite'
   'network-manager-applet'
